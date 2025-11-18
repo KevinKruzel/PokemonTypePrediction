@@ -193,7 +193,7 @@ with col2_r2:
     st.write("Placeholder text")
 
 with big_col_r2:
-    st.subheader("Attack Distribution by Primary Type")
+    st.subheader("HP Distribution by Primary Type")
 
     if df_filtered.empty:
         st.warning("No Pokémon available for the selected filters.")
@@ -201,16 +201,26 @@ with big_col_r2:
         fig_box = px.box(
             df_filtered,
             x="primary_type",
-            y="attack",
-            color="primary_type",
-            color_discrete_map=TYPE_COLORS,
-            title="Attack Stat Distribution Grouped by Primary Type",
+            y="hp",
+            title="HP Stat Distribution Grouped by Primary Type",
             points="outliers",
+            color="primary_type",  # placeholder so traces exist per type
         )
+
+        # Remove default fills and apply colored outlines
+        for trace in fig_box.data:
+            t = trace.name  # the primary_type
+            trace.update(
+                fillcolor="rgba(0,0,0,0)",          # transparent fill
+                line_color=TYPE_COLORS[t],          # outline color
+                marker_color=TYPE_COLORS[t],        # outlier dot color
+                marker_line_color=TYPE_COLORS[t],   # whiskers color
+                marker_line_width=2,
+            )
 
         fig_box.update_layout(
             xaxis_title="Primary Type",
-            yaxis_title="Attack",
+            yaxis_title="HP",
             margin=dict(l=10, r=10, t=40, b=10),
             showlegend=False,
         )
