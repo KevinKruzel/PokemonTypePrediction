@@ -216,7 +216,7 @@ with big_col_r2:
             points="outliers",
         )
 
-        outline_color = "#333333"
+        outline_color = "#EEEEEE"
 
         for trace in fig_box.data:
             t = trace.name
