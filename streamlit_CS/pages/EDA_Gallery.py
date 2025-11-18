@@ -209,7 +209,7 @@ with big_col_r1:
             margin=dict(l=10, r=10, t=40, b=10),
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, theme=None)
 
 with col3_r1:
     st.subheader("Number of Pokémon by Primary Type")
@@ -245,7 +245,7 @@ with col3_r1:
             showlegend=False,
         )
 
-        st.plotly_chart(fig_bar, use_container_width=True)
+        st.plotly_chart(fig_bar, use_container_width=True, theme=None)
 
 # ───────────────────────────
 # ROW 2
