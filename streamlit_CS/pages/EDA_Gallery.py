@@ -73,7 +73,7 @@ min_gen = int(df["generation"].min())
 max_gen = int(df["generation"].max())
 
 gen_min, gen_max = st.sidebar.slider(
-    "Generation range",
+    "Generation Range",
     min_value=min_gen,
     max_value=max_gen,
     value=(min_gen, max_gen),
@@ -117,8 +117,63 @@ st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
 big_col_r1, col3_r1 = st.columns([2, 1])
 
 with big_col_r1:
-    st.subheader("Row 1 — Column 1 and 2")
-    st.write("Placeholder text")
+    st.subheader("Type Combination Heatmap")
+
+    if df_filtered.empty:
+        st.warning("No Pokémon available for the selected filters.")
+    else:
+        # Treat missing secondary types as "None" so mono-type Pokémon show up
+        temp = df_filtered.copy()
+        temp["secondary_type_display"] = temp["secondary_type"].fillna("None")
+
+        # Count Pokémon by (primary_type, secondary_type_display)
+        type_counts = (
+            temp.groupby(["primary_type", "secondary_type_display"])["pokemon_id"]
+            .count()
+            .reset_index(name="count")
+        )
+
+        # Pivot to matrix form for heatmap
+        pivot_table = type_counts.pivot_table(
+            index="secondary_type_display",
+            columns="primary_type",
+            values="count",
+            fill_value=0,
+        )
+
+        # Order axes using TYPE_COLORS where possible
+        type_order = [t for t in TYPE_COLORS.keys() if t in pivot_table.columns]
+        # Add any remaining types not in TYPE_COLORS (just in case)
+        remaining_cols = [c for c in pivot_table.columns if c not in type_order]
+        type_order += remaining_cols
+
+        # For secondary types, use same order plus "None" at the top if present
+        sec_order = ["None"] if "None" in pivot_table.index else []
+        for t in TYPE_COLORS.keys():
+            if t in pivot_table.index and t not in sec_order:
+                sec_order.append(t)
+        # Add any remaining rows not yet included
+        for r in pivot_table.index:
+            if r not in sec_order:
+                sec_order.append(r)
+
+        pivot_table = pivot_table.reindex(index=sec_order, columns=type_order)
+
+        fig = px.imshow(
+            pivot_table,
+            text_auto=True,
+            aspect="auto",
+            color_continuous_scale="Viridis",
+            labels=dict(color="Number of Pokémon"),
+        )
+
+        fig.update_layout(
+            xaxis_title="Primary Type",
+            yaxis_title="Secondary Type (\"None\" = mono-type)",
+            margin=dict(l=10, r=10, t=40, b=10),
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
 
 with col3_r1:
     st.subheader("Row 1 — Column 3")
