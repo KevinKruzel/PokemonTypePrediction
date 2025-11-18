@@ -94,6 +94,50 @@ if not include_dual_typed:
 
 st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
 
+# helper for stat boxplots
+def stat_boxplot(container, df_filtered, stat_col, stat_label):
+    with container:
+        st.subheader(f"{stat_label} Distribution by Primary Type")
+
+        if df_filtered.empty:
+            st.warning("No Pokémon available for the selected filters.")
+        else:
+            type_order = (
+                df_filtered.groupby("primary_type")[stat_col]
+                .mean()
+                .reset_index()
+                .sort_values(stat_col)["primary_type"]
+                .tolist()
+            )
+
+            fig_box = px.box(
+                df_filtered,
+                x="primary_type",
+                y=stat_col,
+                category_orders={"primary_type": type_order},
+                title=f"{stat_label} Stat Distribution by Primary Type",
+                color="primary_type",
+                color_discrete_map=TYPE_COLORS,
+            )
+
+            for trace in fig_box.data:
+                t = trace.name
+                c = TYPE_COLORS.get(t, "#808080")
+                trace.update(
+                    marker_color=c,
+                    marker_line_color=c,
+                    line_color=c,
+                )
+
+            fig_box.update_layout(
+                xaxis_title="Primary Type",
+                yaxis_title=stat_label,
+                margin=dict(l=10, r=10, t=40, b=10),
+                showlegend=False,
+            )
+
+            st.plotly_chart(fig_box, use_container_width=True)
+
 # ───────────────────────────
 # ROW 1
 # ───────────────────────────
