@@ -96,8 +96,6 @@ st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
 
 def stat_boxplot(container, df_filtered, stat_col, stat_label):
     with container:
-        st.subheader(f"{stat_label} Distribution by Primary Type")
-
         if df_filtered.empty:
             st.warning("No Pokémon available for the selected filters.")
         else:
