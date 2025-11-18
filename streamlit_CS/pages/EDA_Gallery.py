@@ -301,7 +301,7 @@ with col1_r5:
                 selected_types.append(t)
 
 with col2_r5:
-    st.subheader("Stat vs Stat Scatterplot")
+   st.subheader("Stat vs Stat Scatterplot")
 
     if df_filtered.empty:
         st.warning("No Pokémon available for the selected filters.")
@@ -330,6 +330,7 @@ with col2_r5:
                     x_stat: True,
                     y_stat: True,
                     "pokemon_id": True,
+                },
             )
 
             fig_scatter.update_layout(
