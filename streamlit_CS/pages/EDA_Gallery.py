@@ -65,7 +65,7 @@ include_regional_variants = st.sidebar.checkbox(
 # Checkbox: include dual-typed Pokémon (default False)
 include_dual_typed = st.sidebar.checkbox(
     "Include Dual-Typed Pokémon",
-    value=False
+    value=True
 )
 
 # Generation range slider
