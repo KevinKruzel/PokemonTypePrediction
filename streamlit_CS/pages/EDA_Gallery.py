@@ -273,7 +273,7 @@ with col1_r5:
     x_stat = stat_labels[x_label]
     y_stat = stat_labels[y_label]
 
-    # Put this BEFORE the type checkboxes so you can clearly see it
+    st.markdown("**Show y = x Reference Line**")
     show_diag_line = st.checkbox(
         "Show y = x reference line",
         value=False,
