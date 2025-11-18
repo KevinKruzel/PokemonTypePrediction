@@ -242,7 +242,7 @@ stat_boxplot(col1_r4, df_filtered, "special-defense", "Special Defense")
 stat_boxplot(col2_r4, df_filtered, "speed", "Speed")
 
 # ───────────────────────────
-# ROW 5 – placeholders
+# ROW 5 – controls + scatter
 # ───────────────────────────
 col1_r5, col2_r5 = st.columns(2)
 
@@ -274,12 +274,10 @@ with col1_r5:
 
     st.markdown("**Types to include**")
 
-    # --- THREE columns for checkboxes ---
     type_col1, type_col2, type_col3 = st.columns(3)
 
     selected_types = []
     sorted_types = sorted(TYPE_COLORS.keys())
-
     third = len(sorted_types) // 3
 
     with type_col1:
@@ -301,7 +299,7 @@ with col1_r5:
                 selected_types.append(t)
 
 with col2_r5:
-   st.subheader("Stat vs Stat Scatterplot")
+    st.subheader("Stat vs Stat Scatterplot")
 
     if df_filtered.empty:
         st.warning("No Pokémon available for the selected filters.")
