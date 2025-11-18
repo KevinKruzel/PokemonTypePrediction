@@ -40,12 +40,30 @@ df = pd.read_csv(DATA_PATH)
 
 st.title("Exploratory Data Analysis Gallery")
 
+# ───────────────────────────
+# SIDEBAR FILTERS
+# ───────────────────────────
 st.sidebar.header("Filters")
 
-include_legendary = st.sidebar.checkbox("Include Legendary Pokémon", value=True)
-include_non_fully_evolved = st.sidebar.checkbox("Include Non-Fully Evolved Pokémon", value=True)
-include_regional_variants = st.sidebar.checkbox("Include Regional Variants", value=True)
-include_dual_typed = st.sidebar.checkbox("Include Dual-Typed Pokémon", value=True)
+include_legendary = st.sidebar.checkbox(
+    "Include Legendary Pokémon",
+    value=True
+)
+
+include_non_fully_evolved = st.sidebar.checkbox(
+    "Include Non-Fully Evolved Pokémon",
+    value=True
+)
+
+include_regional_variants = st.sidebar.checkbox(
+    "Include Regional Variants",
+    value=True
+)
+
+include_dual_typed = st.sidebar.checkbox(
+    "Include Dual-Typed Pokémon",
+    value=True
+)
 
 min_gen = int(df["generation"].min())
 max_gen = int(df["generation"].max())
@@ -79,16 +97,19 @@ if not include_dual_typed:
 
 st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
 
+# ───────────────────────────
 # ROW 1
-big_col_r1, col2_r1, col3_r1, col4_r1 = st.columns([2, 1, 1, 1])
+# ───────────────────────────
+big_col_r1_left, big_col_r1_right = st.columns([2, 2])
 
-with big_col_r1:
+with big_col_r1_left:
     st.subheader("Type Combination Heatmap")
 
     if df_filtered.empty:
         st.warning("No Pokémon available for the selected filters.")
     else:
         temp = df_filtered.copy()
+
         temp["secondary_type_display"] = temp["secondary_type"]
         mono_mask = temp["secondary_type_display"].isna()
         temp.loc[mono_mask, "secondary_type_display"] = temp.loc[mono_mask, "primary_type"]
@@ -127,23 +148,8 @@ with big_col_r1:
 
         st.plotly_chart(fig, use_container_width=True)
 
-with col2_r1:
-    st.subheader("Pokémon Count by Primary Type (Part 1)")
-    st.write("Placeholder text")
-
-with col3_r1:
-    st.subheader("Pokémon Count by Primary Type (Part 2)")
-    st.write("Placeholder text")
-
-with col4_r1:
-    st.subheader("Pokémon Count by Primary Type (Part 3)")
-    st.write("Placeholder text")
-
-# ROW 2
-col1_r2, col2_r2 = st.columns([2, 2])
-
-with col1_r2:
-    st.subheader("Pokémon Count by Primary Type")
+with big_col_r1_right:
+    st.subheader("Number of Pokémon by Primary Type")
 
     if df_filtered.empty:
         st.warning("No Pokémon available for the selected filters.")
@@ -176,26 +182,45 @@ with col1_r2:
 
         st.plotly_chart(fig_bar, use_container_width=True)
 
+# ───────────────────────────
+# ROW 2
+# ───────────────────────────
+col1_r2, col2_r2, col3_r2, col4_r2 = st.columns(4)
+
+with col1_r2:
+    st.subheader("Row 2 — Column 1")
+    st.write("Placeholder text")
+
 with col2_r2:
     st.subheader("Row 2 — Column 2")
     st.write("Placeholder text")
 
-# ROW 3
-c1, c2, c3, c4 = st.columns(4)
+with col3_r2:
+    st.subheader("Row 2 — Column 3")
+    st.write("Placeholder text")
 
-with c1:
+with col4_r2:
+    st.subheader("Row 2 — Column 4")
+    st.write("Placeholder text")
+
+# ───────────────────────────
+# ROW 3
+# ───────────────────────────
+col1_r3, col2_r3, col3_r3, col4_r3 = st.columns(4)
+
+with col1_r3:
     st.subheader("Row 3 — Column 1")
     st.write("Placeholder text.")
 
-with c2:
+with col2_r3:
     st.subheader("Row 3 — Column 2")
     st.write("Placeholder text.")
 
-with c3:
+with col3_r3:
     st.subheader("Row 3 — Column 3")
     st.write("Placeholder text.")
 
-with c4:
+with col4_r3:
     st.subheader("Row 3 — Column 4")
     st.write("Placeholder text.")
 
