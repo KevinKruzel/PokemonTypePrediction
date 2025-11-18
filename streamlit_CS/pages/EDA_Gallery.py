@@ -285,15 +285,15 @@ with col1_r5:
     with type_col1:
         for t in sorted_types[:half]:
             default_checked = (t in ["fighting", "psychic"])
-            colored_label = f"<span style='color:{TYPE_COLORS[t]}; font-weight:600;'>{t.capitalize()}</span>"
-            if st.checkbox(colored_label, value=default_checked, key=f"type_{t}"):
+            label = t.capitalize()
+            if st.checkbox(label, value=default_checked, key=f"type_{t}"):
                 selected_types.append(t)
 
     with type_col2:
         for t in sorted_types[half:]:
             default_checked = (t in ["fighting", "psychic"])
-            colored_label = f"<span style='color:{TYPE_COLORS[t]}; font-weight:600;'>{t.capitalize()}</span>"
-            if st.checkbox(colored_label, value=default_checked, key=f"type2_{t}"):
+            label = t.capitalize()
+            if st.checkbox(label, value=default_checked, key=f"type2_{t}"):
                 selected_types.append(t)
 
 with col2_r5:
