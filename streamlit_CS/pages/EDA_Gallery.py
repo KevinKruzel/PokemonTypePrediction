@@ -202,20 +202,23 @@ with big_col_r2:
             df_filtered,
             x="primary_type",
             y="hp",
+            color="primary_type",
+            color_discrete_map=TYPE_COLORS,
             title="HP Stat Distribution Grouped by Primary Type",
             points="outliers",
-            color="primary_type",  # placeholder so traces exist per type
         )
 
-        # Remove default fills and apply colored outlines
+        outline_color = "#333333"
+
         for trace in fig_box.data:
-            t = trace.name  # the primary_type
+            t = trace.name
+            fill = TYPE_COLORS.get(t, "#888888")
             trace.update(
-                fillcolor="rgba(0,0,0,0)",          # transparent fill
-                line_color=TYPE_COLORS[t],          # outline color
-                marker_color=TYPE_COLORS[t],        # outlier dot color
-                marker_line_color=TYPE_COLORS[t],   # whiskers color
-                marker_line_width=2,
+                fillcolor=fill,
+                line_color=outline_color,
+                marker_color=fill,
+                marker_line_color=outline_color,
+                marker_line_width=1.5,
             )
 
         fig_box.update_layout(
