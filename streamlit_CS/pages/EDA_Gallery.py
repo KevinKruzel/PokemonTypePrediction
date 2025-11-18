@@ -274,24 +274,30 @@ with col1_r5:
 
     st.markdown("**Types to include**")
 
-    type_col1, type_col2 = st.columns(2)
+    # --- THREE columns for checkboxes ---
+    type_col1, type_col2, type_col3 = st.columns(3)
 
     selected_types = []
     sorted_types = sorted(TYPE_COLORS.keys())
-    half = len(sorted_types) // 2
+
+    third = len(sorted_types) // 3
 
     with type_col1:
-        for t in sorted_types[:half]:
+        for t in sorted_types[:third]:
             default_checked = (t in ["fighting", "psychic"])
-            label = t.capitalize()
-            if st.checkbox(label, value=default_checked, key=f"type_{t}"):
+            if st.checkbox(t.capitalize(), value=default_checked, key=f"type_{t}"):
                 selected_types.append(t)
 
     with type_col2:
-        for t in sorted_types[half:]:
+        for t in sorted_types[third: third*2]:
             default_checked = (t in ["fighting", "psychic"])
-            label = t.capitalize()
-            if st.checkbox(label, value=default_checked, key=f"type2_{t}"):
+            if st.checkbox(t.capitalize(), value=default_checked, key=f"type_{t}_2"):
+                selected_types.append(t)
+
+    with type_col3:
+        for t in sorted_types[third*2:]:
+            default_checked = (t in ["fighting", "psychic"])
+            if st.checkbox(t.capitalize(), value=default_checked, key=f"type_{t}_3"):
                 selected_types.append(t)
 
 with col2_r5:
