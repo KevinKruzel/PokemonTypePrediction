@@ -180,98 +180,48 @@ with big_col_r1_right:
         st.plotly_chart(fig_bar, use_container_width=True)
 
 # ───────────────────────────
-# ROW 2
+# ROW 2 (HP, Attack)
 # ───────────────────────────
-col1_r2, col2_r2, big_col_r2 = st.columns([1, 1, 3])
+big_left_r2, mid_r2, big_right_r2 = st.columns([2, 1, 2])
 
-with col1_r2:
-    st.subheader("Row 2 — Column 1")
-    st.write("Placeholder text")
+stat_boxplot(big_left_r2, df_filtered, "hp", "HP")
 
-with col2_r2:
-    st.subheader("Row 2 — Column 2")
-    st.write("Placeholder text")
-
-with big_col_r2:
-    st.subheader("HP Distribution by Primary Type")
-
-    if df_filtered.empty:
-        st.warning("No Pokémon available for the selected filters.")
-    else:
-        type_order = (
-            df_filtered.groupby("primary_type")["hp"]
-            .mean()
-            .reset_index()
-            .sort_values("hp")["primary_type"]
-            .tolist()
-        )
-
-        fig_box = px.box(
-            df_filtered,
-            x="primary_type",
-            y="hp",
-            category_orders={"primary_type": type_order},
-            title="HP Stat Distribution by Primary Type",
-            color="primary_type",
-            color_discrete_map=TYPE_COLORS,
-        )
-
-        for trace in fig_box.data:
-            t = trace.name
-            c = TYPE_COLORS.get(t, "#808080")
-            trace.update(
-                marker_color=c,
-                marker_line_color=c,
-                line_color=c,
-            )
-
-        fig_box.update_layout(
-            xaxis_title="Primary Type",
-            yaxis_title="HP",
-            margin=dict(l=10, r=10, t=40, b=10),
-            showlegend=False,
-        )
-
-        st.plotly_chart(fig_box, use_container_width=True)
-
-# ───────────────────────────
-# ROW 3
-# ───────────────────────────
-col1_r3, col2_r3, big_col_r3 = st.columns([1, 1, 3])
-
-with col1_r3:
-    st.subheader("Row 3 — Column 1")
+with mid_r2:
+    st.subheader("Row 2 — Column 3")
     st.write("Placeholder text.")
 
-with col2_r3:
-    st.subheader("Row 3 — Column 2")
-    st.write("Placeholder text.")
-
-with big_col_r3:
-    st.subheader("Row 3 — Columns 3–5")
-    st.write("Placeholder text.")
+stat_boxplot(big_right_r2, df_filtered, "attack", "Attack")
 
 # ───────────────────────────
-# ROW 4
+# ROW 3 (Defense, Sp. Atk)
 # ───────────────────────────
-col1_r4, col2_r4, big_col_r4 = st.columns([1, 1, 3])
+big_left_r3, mid_r3, big_right_r3 = st.columns([2, 1, 2])
 
-with col1_r4:
-    st.subheader("Row 4 — Column 1")
+stat_boxplot(big_left_r3, df_filtered, "defense", "Defense")
+
+with mid_r3:
+    st.subheader("Row 3 — Column 3")
     st.write("Placeholder text.")
 
-with col2_r4:
-    st.subheader("Row 4 — Column 2")
-    st.write("Placeholder text.")
-
-with big_col_r4:
-    st.subheader("Row 4 — Columns 3–5")
-    st.write("Placeholder text.")
+stat_boxplot(big_right_r3, df_filtered, "special-attack", "Special Attack")
 
 # ───────────────────────────
-# ROW 5
+# ROW 4 (Sp. Def, Speed)
 # ───────────────────────────
-col1_r5, col2_r5, big_col_r5 = st.columns([1, 1, 3])
+big_left_r4, mid_r4, big_right_r4 = st.columns([2, 1, 2])
+
+stat_boxplot(big_left_r4, df_filtered, "special-defense", "Special Defense")
+
+with mid_r4:
+    st.subheader("Row 4 — Column 3")
+    st.write("Placeholder text.")
+
+stat_boxplot(big_right_r4, df_filtered, "speed", "Speed")
+
+# ───────────────────────────
+# ROW 5 (5 separate columns, placeholders)
+# ───────────────────────────
+col1_r5, col2_r5, col3_r5, col4_r5, col5_r5 = st.columns(5)
 
 with col1_r5:
     st.subheader("Row 5 — Column 1")
@@ -281,42 +231,16 @@ with col2_r5:
     st.subheader("Row 5 — Column 2")
     st.write("Placeholder text.")
 
-with big_col_r5:
-    st.subheader("Row 5 — Columns 3–5")
+with col3_r5:
+    st.subheader("Row 5 — Column 3")
     st.write("Placeholder text.")
 
-# ───────────────────────────
-# ROW 6
-# ───────────────────────────
-col1_r6, col2_r6, big_col_r6 = st.columns([1, 1, 3])
-
-with col1_r6:
-    st.subheader("Row 6 — Column 1")
+with col4_r5:
+    st.subheader("Row 5 — Column 4")
     st.write("Placeholder text.")
 
-with col2_r6:
-    st.subheader("Row 6 — Column 2")
-    st.write("Placeholder text.")
-
-with big_col_r6:
-    st.subheader("Row 6 — Columns 3–5")
-    st.write("Placeholder text.")
-
-# ───────────────────────────
-# ROW 7
-# ───────────────────────────
-col1_r7, col2_r7, big_col_r7 = st.columns([1, 1, 3])
-
-with col1_r7:
-    st.subheader("Row 7 — Column 1")
-    st.write("Placeholder text.")
-
-with col2_r7:
-    st.subheader("Row 7 — Column 2")
-    st.write("Placeholder text.")
-
-with big_col_r7:
-    st.subheader("Row 7 — Columns 3–5")
+with col5_r5:
+    st.subheader("Row 5 — Column 5")
     st.write("Placeholder text.")
 
 st.divider()
