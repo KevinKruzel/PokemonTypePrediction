@@ -245,7 +245,7 @@ stat_boxplot(col2_r4, df_filtered, "speed", "Speed")
 # ───────────────────────────
 # ROW 5 – controls + scatter
 # ───────────────────────────
-col1_r5, col2_r5 = st.columns([2, 3]) # 2/5 width and 3/5 width
+col1_r5, col2_r5 = st.columns([2, 3])  # 2/5 width and 3/5 width
 
 with col1_r5:
     st.subheader("Scatterplot Controls")
@@ -313,6 +313,7 @@ with col2_r5:
     else:
         df_scatter = df_filtered.copy()
 
+        # Filter by selected types
         if selected_types:
             df_scatter = df_scatter[df_scatter["primary_type"].isin(selected_types)]
         else:
@@ -321,6 +322,11 @@ with col2_r5:
         if df_scatter.empty:
             st.warning("No Pokémon match the selected types.")
         else:
+            # Make sure the stats are numeric
+            df_scatter[x_stat] = pd.to_numeric(df_scatter[x_stat], errors="coerce")
+            df_scatter[y_stat] = pd.to_numeric(df_scatter[y_stat], errors="coerce")
+            df_scatter = df_scatter.dropna(subset=[x_stat, y_stat])
+
             fig_scatter = px.scatter(
                 df_scatter,
                 x=x_stat,
@@ -342,15 +348,15 @@ with col2_r5:
                 min_val = min(df_scatter[x_stat].min(), df_scatter[y_stat].min())
                 max_val = max(df_scatter[x_stat].max(), df_scatter[y_stat].max())
 
-                fig_scatter.add_trace(
-                    go.Scatter(
-                        x=[min_val, max_val],
-                        y=[min_val, max_val],
-                        mode="lines",
-                        name="y = x",
-                        line=dict(color="gray", dash="dash"),
-                        showlegend=True,
-                    )
+                fig_scatter.add_shape(
+                    type="line",
+                    x0=min_val,
+                    y0=min_val,
+                    x1=max_val,
+                    y1=max_val,
+                    line=dict(color="gray", dash="dash"),
+                    layer="above",
+                    name="y = x",
                 )
 
             fig_scatter.update_layout(
