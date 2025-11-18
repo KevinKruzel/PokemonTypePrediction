@@ -7,6 +7,26 @@ import seaborn as sns
 import numpy as np
 from pathlib import Path
 
+TYPE_COLORS = {
+    "normal":  "#A8A77A",
+    "fire":    "#EE8130",
+    "water":   "#6390F0",
+    "electric":"#F7D02C",
+    "grass":   "#7AC74C",
+    "ice":     "#96D9D6",
+    "fighting":"#C22E28",
+    "poison":  "#A33EA1",
+    "ground":  "#E2BF65",
+    "flying":  "#A98FF3",
+    "psychic": "#F95587",
+    "bug":     "#A6B91A",
+    "rock":    "#B6A136",
+    "ghost":   "#735797",
+    "dragon":  "#6F35FC",
+    "dark":    "#705746",
+    "steel":   "#B7B7CE",
+    "fairy":   "#D685AD"
+}
 
 st.set_page_config(
     page_title="EDA Gallery",
@@ -24,6 +44,72 @@ st.title("Exploratory Data Analysis Gallery")
 # SIDEBAR FILTERS
 # ───────────────────────────
 st.sidebar.header("Filters")
+# Checkbox: include legendary Pokémon (default True)
+include_legendary = st.sidebar.checkbox(
+    "Include Legendary Pokémon",
+    value=True
+)
+
+# Checkbox: include non-fully-evolved Pokémon (default True)
+include_non_fully_evolved = st.sidebar.checkbox(
+    "Include Non-Fully Evolved Pokémon",
+    value=True
+)
+
+# Checkbox: include regional variants (default True)
+include_regional_variants = st.sidebar.checkbox(
+    "Include Regional Variants",
+    value=True
+)
+
+# Checkbox: include dual-typed Pokémon (default False)
+include_dual_typed = st.sidebar.checkbox(
+    "Include Dual-Typed Pokémon",
+    value=False
+)
+
+# Generation range slider
+min_gen = int(df["generation"].min())
+max_gen = int(df["generation"].max())
+
+gen_min, gen_max = st.sidebar.slider(
+    "Generation range",
+    min_value=min_gen,
+    max_value=max_gen,
+    value=(min_gen, max_gen),
+    help="Filter Pokémon by generation number.",
+)
+
+# Build filtered dataframe
+df_filtered = df.copy()
+
+# Apply generation filter
+df_filtered = df_filtered[
+    (df_filtered["generation"] >= gen_min) &
+    (df_filtered["generation"] <= gen_max)
+]
+
+# Apply legendary filter
+if not include_legendary:
+    df_filtered = df_filtered[df_filtered["is_legendary"] == False]
+
+# Apply non-fully-evolved filter
+# If the box is unchecked, we keep only fully evolved Pokémon
+if not include_non_fully_evolved:
+    df_filtered = df_filtered[df_filtered["is_fully_evolved"] == True]
+
+# Apply regional variants filter
+if not include_regional_variants:
+    df_filtered = df_filtered[df_filtered["is_regional_variant"] == False]
+
+# Apply dual-typed filter
+# If unchecked, we keep only mono-type Pokémon
+if not include_dual_typed:
+    df_filtered = df_filtered[df_filtered["is_mono-type"] == True]
+# If checked, we include both mono and dual types (no extra filter)
+
+# Optional: small status line
+st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
 
 # ───────────────────────────
 # ROW 1
