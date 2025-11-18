@@ -198,12 +198,20 @@ with big_col_r2:
     if df_filtered.empty:
         st.warning("No Pokémon available for the selected filters.")
     else:
+        type_hp_means = (
+            df_filtered.groupby("primary_type")["hp"]
+            .mean()
+            .sort_values(ascending=True)
+        )
+        type_order = type_hp_means.index.tolist()
+
         fig_box = px.box(
             df_filtered,
             x="primary_type",
             y="hp",
             color="primary_type",
             color_discrete_map=TYPE_COLORS,
+            category_orders={"primary_type": type_order},
             title="HP Stat Distribution Grouped by Primary Type",
             points="outliers",
         )
@@ -222,7 +230,7 @@ with big_col_r2:
             )
 
         fig_box.update_layout(
-            xaxis_title="Primary Type",
+            xaxis_title="Primary Type (sorted by mean HP)",
             yaxis_title="HP",
             margin=dict(l=10, r=10, t=40, b=10),
             showlegend=False,
