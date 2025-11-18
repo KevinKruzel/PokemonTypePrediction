@@ -261,14 +261,14 @@ with col1_r5:
     }
 
     x_label = st.selectbox(
-        "X-axis stat",
-        list(stat_labels.keys()),
-        index=0  # default HP
-    )
-    y_label = st.selectbox(
-        "Y-axis stat",
+        "X-axis Stat",
         list(stat_labels.keys()),
         index=1  # default Attack
+    )
+    y_label = st.selectbox(
+        "Y-axis Stat",
+        list(stat_labels.keys()),
+        index=3  # default Special Attack
     )
 
     x_stat = stat_labels[x_label]
@@ -276,26 +276,24 @@ with col1_r5:
 
     st.markdown("**Types to include**")
 
-    # Create two columns for checkboxes
     type_col1, type_col2 = st.columns(2)
 
     selected_types = []
     sorted_types = sorted(TYPE_COLORS.keys())
-
     half = len(sorted_types) // 2
 
-    # First half in col 1
     with type_col1:
         for t in sorted_types[:half]:
-            default_checked = (t == "normal")
-            if st.checkbox(t.capitalize(), value=default_checked, key=f"type_{t}"):
+            default_checked = (t in ["fighting", "psychic"])
+            colored_label = f"<span style='color:{TYPE_COLORS[t]}; font-weight:600;'>{t.capitalize()}</span>"
+            if st.checkbox(colored_label, value=default_checked, key=f"type_{t}", help="", disabled=False):
                 selected_types.append(t)
 
-    # Second half in col 2
     with type_col2:
         for t in sorted_types[half:]:
-            default_checked = (t == "normal")
-            if st.checkbox(t.capitalize(), value=default_checked, key=f"type2_{t}"):
+            default_checked = (t in ["fighting", "psychic"])
+            colored_label = f"<span style='color:{TYPE_COLORS[t]}; font-weight:600;'>{t.capitalize()}</span>"
+            if st.checkbox(colored_label, value=default_checked, key=f"type2_{t}", help="", disabled=False):
                 selected_types.append(t)
 
 with col2_r5:
