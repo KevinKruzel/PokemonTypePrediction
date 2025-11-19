@@ -25,16 +25,13 @@ st.set_page_config(
 # ───────────────────────────
 DATA_PATH = Path(__file__).parent.parent / "data" / "pokemon_dataset.csv"
 df = pd.read_csv(DATA_PATH)
-
 df_filtered = apply_pokemon_filters(df)
 
 # ───────────────────────────
 # PAGE HEADER
 # ───────────────────────────
 st.title("Machine Learning Model")
-
 st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
-
 st.divider()
 
 # ───────────────────────────
