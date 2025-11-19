@@ -168,8 +168,14 @@ with col2_r1:
     )
 
     cm_fig.update_layout(
-        margin=dict(l=0, r=0, t=40, b=10),
-    )
+    coloraxis_colorbar=dict(
+        thickness=10,
+        len=0.5,
+        xpad=0,
+        ypad=0,
+    ),
+    margin=dict(l=0, r=0, t=40, b=10),
+)
 
     st.plotly_chart(cm_fig, use_container_width=True)
 
