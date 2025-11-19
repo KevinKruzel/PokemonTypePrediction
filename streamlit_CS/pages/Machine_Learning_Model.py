@@ -34,18 +34,127 @@ st.title("Machine Learning Model")
 st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
 st.divider()
 
+# Guard: need data and at least 2 classes
+if df_filtered.empty:
+    st.warning("No Pokémon available for the selected filters. Adjust filters in the sidebar.")
+    st.stop()
+
+if df_filtered["primary_type"].nunique() < 2:
+    st.warning("Not enough primary type classes in the filtered data to train a classifier.")
+    st.stop()
+
 # ───────────────────────────
-# ROW 1
+# FEATURES AND TARGET
 # ───────────────────────────
-col1_r1, col2_r1 = st.columns(2)
+STAT_COLS = ["hp", "attack", "defense", "special-attack", "special-defense", "speed"]
+
+df_ml = df_filtered.dropna(subset=STAT_COLS + ["primary_type"]).copy()
+X = df_ml[STAT_COLS].values
+y = df_ml["primary_type"].values
+
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+class_names = list(label_encoder.classes_)
+
+# For K-fold upper bound, we need class counts
+class_counts = pd.Series(y).value_counts()
+min_class_count = int(class_counts.min())
+max_k_allowed = max(2, min(10, min_class_count))
+
+# ───────────────────────────
+# ROW 1 – controls (col 1) + confusion matrix (col 2)
+# ───────────────────────────
+col1_r1, col2_r1 = st.columns([1, 2])
 
 with col1_r1:
-    st.subheader("Row 1 — Column 1")
-    st.write("Placeholder text")
+    st.subheader("Random Forest Settings")
+
+    k_folds = st.slider(
+        "Number of Folds (K)",
+        min_value=2,
+        max_value=max_k_allowed,
+        value=min(5, max_k_allowed),
+        help="Number of folds for Stratified K-Fold cross-validation.",
+    )
+
+    n_estimators = st.slider("Number of Trees (n_estimators)", 50, 500, 200, step=10)
+    max_depth = st.slider("Max Depth (None = unlimited)", 1, 50, 15)
+    use_max_depth_none = st.checkbox("Disable max depth (use None)", value=False)
+
+    min_samples_split = st.slider("Min Samples Split", 2, 20, 2)
+    min_samples_leaf = st.slider("Min Samples Leaf", 1, 10, 1)
+
+    criterion = st.selectbox("Split Criterion", ["gini", "entropy"], index=0)
+    max_features = st.selectbox("Max Features per Split", ["sqrt", "log2", "auto"], index=0)
+
+    bootstrap = st.checkbox("Use Bootstrap Samples", value=True)
+
+    if use_max_depth_none:
+        rf_max_depth = None
+    else:
+        rf_max_depth = max_depth
+
+# ───────────────────────────
+# TRAIN MODEL WITH STRATIFIED K-FOLD
+# ───────────────────────────
+from sklearn.model_selection import StratifiedKFold
+
+kf = StratifiedKFold(n_splits=k_folds, shuffle=True, random_state=42)
+
+fold_accuracies = []
+cm_total = np.zeros((len(class_names), len(class_names)), dtype=int)
+
+for train_idx, test_idx in kf.split(X, y_encoded):
+    X_train, X_test = X[train_idx], X[test_idx]
+    y_train, y_test = y_encoded[train_idx], y_encoded[test_idx]
+
+    model = RandomForestClassifier(
+        n_estimators=n_estimators,
+        max_depth=rf_max_depth,
+        min_samples_split=min_samples_split,
+        min_samples_leaf=min_samples_leaf,
+        criterion=criterion,
+        max_features=max_features if max_features != "auto" else "auto",
+        bootstrap=bootstrap,
+        random_state=42,
+        n_jobs=-1,
+    )
+
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+    acc = accuracy_score(y_test, y_pred)
+    fold_accuracies.append(acc)
+
+    cm = confusion_matrix(y_test, y_pred, labels=range(len(class_names)))
+    cm_total += cm
+
+mean_acc = float(np.mean(fold_accuracies))
 
 with col2_r1:
-    st.subheader("Row 1 — Column 2")
-    st.write("Placeholder text")
+    st.subheader("Confusion Matrix (Aggregated Across Folds)")
+
+    cm_fig = px.imshow(
+        cm_total,
+        x=class_names,
+        y=class_names,
+        text_auto=True,
+        color_continuous_scale="Blues",
+        labels=dict(color="Count", x="Predicted Type", y="True Type"),
+    )
+
+    cm_fig.update_layout(
+        margin=dict(l=10, r=10, t=40, b=10),
+    )
+
+    st.plotly_chart(cm_fig, use_container_width=True)
+
+# ───────────────────────────
+# ROW 2 – simple accuracy print
+# ───────────────────────────
+st.divider()
+st.subheader("Model Accuracy Summary")
+st.write(f"Mean cross-validated accuracy over {k_folds} folds: **{mean_acc * 100:.2f}%**")
 
 # ───────────────────────────
 # FOOTER
