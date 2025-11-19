@@ -10,6 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.tree import plot_tree
 from filters import apply_pokemon_filters
 from filters import TYPE_COLORS
 
@@ -98,6 +99,23 @@ with col1_r1:
         rf_max_depth = max_depth
 
 # ───────────────────────────
+# Train single RF for visualization
+# ───────────────────────────
+viz_rf = RandomForestClassifier(
+    n_estimators=n_estimators,
+    max_depth=rf_max_depth,
+    min_samples_split=min_samples_split,
+    min_samples_leaf=min_samples_leaf,
+    criterion=criterion,
+    max_features=max_features if max_features != "auto" else "auto",
+    bootstrap=bootstrap,
+    random_state=42,
+    n_jobs=-1,
+)
+
+viz_rf.fit(X, y_encoded)
+
+# ───────────────────────────
 # TRAIN MODEL WITH STRATIFIED K-FOLD
 # ───────────────────────────
 from sklearn.model_selection import StratifiedKFold
@@ -158,6 +176,30 @@ with col2_r1:
 st.divider()
 st.subheader("Model Accuracy Summary")
 st.write(f"Mean cross-validated accuracy over {k_folds} folds: **{mean_acc * 100:.2f}%**")
+
+# ───────────────────────────
+# ROW 3 – example tree visualization
+# ───────────────────────────
+st.divider()
+st.subheader("Example Decision Tree from the Random Forest")
+
+if hasattr(viz_rf, "estimators_") and len(viz_rf.estimators_) > 0:
+    with st.expander("Show example decision tree (depth limited for readability)"):
+        fig, ax = plt.subplots(figsize=(14, 8))
+
+        plot_tree(
+            viz_rf.estimators_[0],  # first tree in the forest
+            feature_names=STAT_COLS,
+            class_names=class_names,
+            filled=True,
+            max_depth=3,            # keep shallow so it fits on the page
+            fontsize=6,
+            rounded=True,
+        )
+
+        st.pyplot(fig)
+else:
+    st.info("Tree visualization not available (no trained estimators).")
 
 # ───────────────────────────
 # FOOTER
