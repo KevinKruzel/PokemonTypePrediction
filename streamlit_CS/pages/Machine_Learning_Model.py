@@ -168,7 +168,7 @@ with col2_r1:
     )
 
     cm_fig.update_layout(
-        margin=dict(l=10, r=10, t=40, b=10),
+        margin=dict(l=0, r=0, t=40, b=10),
     )
 
     st.plotly_chart(cm_fig, use_container_width=True)
