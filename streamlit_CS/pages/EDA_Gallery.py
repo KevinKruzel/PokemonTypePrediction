@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from pathlib import Path
+from filters import apply_pokemon_filters
 
 TYPE_COLORS = {
     "normal":  "#A8A77A",
@@ -40,59 +41,7 @@ df = pd.read_csv(DATA_PATH)
 
 st.title("Exploratory Data Analysis Gallery")
 
-st.sidebar.header("Filters")
-
-include_legendary = st.sidebar.checkbox(
-    "Include Legendary Pokémon",
-    value=True
-)
-
-include_non_fully_evolved = st.sidebar.checkbox(
-    "Include Non-Fully Evolved Pokémon",
-    value=True
-)
-
-include_regional_variants = st.sidebar.checkbox(
-    "Include Regional Variants",
-    value=True
-)
-
-include_dual_typed = st.sidebar.checkbox(
-    "Include Dual-Typed Pokémon",
-    value=True
-)
-
-min_gen = int(df["generation"].min())
-max_gen = int(df["generation"].max())
-
-gen_min, gen_max = st.sidebar.slider(
-    "Generation Range",
-    min_value=min_gen,
-    max_value=max_gen,
-    value=(min_gen, max_gen),
-    help="Filter Pokémon by generation number.",
-)
-
-df_filtered = df.copy()
-
-df_filtered = df_filtered[
-    (df_filtered["generation"] >= gen_min) &
-    (df_filtered["generation"] <= gen_max)
-]
-
-if not include_legendary:
-    df_filtered = df_filtered[df_filtered["is_legendary"] == False]
-
-if not include_non_fully_evolved:
-    df_filtered = df_filtered[df_filtered["is_fully_evolved"] == True]
-
-if not include_regional_variants:
-    df_filtered = df_filtered[df_filtered["is_regional_variant"] == False]
-
-if not include_dual_typed:
-    df_filtered = df_filtered[df_filtered["is_mono-type"] == True]
-
-st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
+df_filtered = apply_pokemon_filters(df)
 
 def stat_boxplot(container, df_filtered, stat_col, stat_label):
     with container:
