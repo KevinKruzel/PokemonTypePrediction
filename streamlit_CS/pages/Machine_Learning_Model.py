@@ -67,9 +67,19 @@ class_counts = pd.Series(y).value_counts()
 min_class_count = int(class_counts.min())
 max_k_allowed = max(2, min(10, min_class_count))
 
+
+
 # ───────────────────────────
 # ROW 1 – controls (col 1) + confusion matrix (col 2) + feature importances (col 3)
 # ───────────────────────────
+# Model Accuracy at the top of the row
+st.markdown(
+    f"<h3 style='text-align:center; margin-top: 0.5rem;'>"
+    f"Mean Cross-Validated Accuracy: {mean_acc * 100:.2f}%"
+    f"</h3>",
+    unsafe_allow_html=True,
+)
+
 col1_r1, col2_r1, col3_r1 = st.columns([1, 3, 1])
 
 with col1_r1:
@@ -208,13 +218,6 @@ feat_imp = (
 mean_acc = float(np.mean(fold_accuracies))
 
 with col2_r1:
-    st.markdown(
-        f"<h3 style='text-align:center; margin-top: 0.5rem;'>"
-        f"Mean Cross-Validated accuracy: {mean_acc * 100:.2f}%"
-        f"</h3>",
-        unsafe_allow_html=True,
-    )
-    
     st.subheader("Confusion Matrix (Aggregated Across Folds)")
 
     cm_fig = px.imshow(
