@@ -266,7 +266,7 @@ with col1_r5:
             "Type Averages Only",
             "Both Individuals and Averages",
         ],
-        index=0,
+        index=2,
         help="Individual Pokémon will appear as small data points. Type averages will appear as large data points."
     )
 
@@ -286,7 +286,7 @@ with col1_r5:
 
     show_diag_line = st.checkbox(
         "Show Y = X Reference Line",
-        value=False,
+        value=True,
         help="When checked, draws a diagonal line where the two stats are equal."
     )
 
