@@ -31,7 +31,12 @@ df_filtered = apply_pokemon_filters(df)
 # PAGE HEADER
 # ───────────────────────────
 st.title("Exploratory Data Analysis Gallery")
+st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
+st.divider()
 
+# ───────────────────────────
+# BOXPLOT FUNCTION
+# ───────────────────────────
 def stat_boxplot(container, df_filtered, stat_col, stat_label):
     with container:
         if df_filtered.empty:
