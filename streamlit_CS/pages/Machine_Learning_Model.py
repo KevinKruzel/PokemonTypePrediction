@@ -183,7 +183,6 @@ st.write(f"Mean cross-validated accuracy over {k_folds} folds: **{mean_acc * 100
 st.divider()
 st.subheader("Example Decision Tree from the Random Forest")
 
-# Fit a Random Forest using current hyperparameters
 rf_viz = RandomForestClassifier(
     n_estimators=n_estimators,
     max_depth=rf_max_depth,
@@ -197,42 +196,36 @@ rf_viz = RandomForestClassifier(
 
 rf_viz.fit(X, y_encoded)
 
-# Take one tree to visualize
 tree_clf = rf_viz.estimators_[0]
 tree_ = tree_clf.tree_
 
 fig, ax = plt.subplots(figsize=(22, 12))
 
-# Use filled=True so patches are fully colorable
 artists = plot_tree(
     tree_clf,
     feature_names=STAT_COLS,
     class_names=class_names,
-    filled=True,          # <-- changed from False
+    filled=False,      # we’ll do our own coloring
     rounded=True,
     impurity=True,
     fontsize=12,
     ax=ax,
 )
 
-node_values = tree_.value  # shape: (n_nodes, 1, n_classes)
-patch_index = 0
+node_values = tree_.value  # shape: (n_nodes, 1, n_classes) or (n_nodes, n_classes)
 
-for node_id in range(tree_.node_count):
-    # Find the next node box (FancyBboxPatch)
-    while patch_index < len(artists) and not isinstance(
-        artists[patch_index], mpatches.FancyBboxPatch
-    ):
-        patch_index += 1
+for node_id, artist in enumerate(artists):
+    # Each artist here is a matplotlib.text.Annotation
+    bbox = artist.get_bbox_patch()
+    if bbox is None:
+        continue  # safety, but usually every node has a bbox
 
-    if patch_index >= len(artists):
-        break
+    # Get class counts at this node
+    if node_values.ndim == 3:
+        counts = node_values[node_id][0]
+    else:
+        counts = node_values[node_id]
 
-    patch = artists[patch_index]
-    patch_index += 1
-
-    # Predicted class at this node
-    counts = node_values[node_id][0]
     pred_idx = counts.argmax()
     pred_class = class_names[pred_idx]
 
@@ -242,19 +235,15 @@ for node_id in range(tree_.node_count):
     )
 
     if is_leaf:
-        # Normalize to lowercase and strip just in case
-        pred_class_key = str(pred_class).strip().lower()
-        color = TYPE_COLORS.get(pred_class_key, "#808080")
-        patch.set_facecolor(color)
-        patch.set_edgecolor("black")
-        patch.set_linewidth(2)
-        patch.set_alpha(1.0)
+        color_key = str(pred_class).lower()
+        color = TYPE_COLORS.get(color_key, "#808080")
+        bbox.set_facecolor(color)
+        bbox.set_edgecolor("black")
+        bbox.set_linewidth(2)
     else:
-        # Keep internal nodes white
-        patch.set_facecolor("#FFFFFF")
-        patch.set_edgecolor("black")
-        patch.set_linewidth(1.5)
-        patch.set_alpha(1.0)
+        bbox.set_facecolor("#FFFFFF")
+        bbox.set_edgecolor("black")
+        bbox.set_linewidth(1.5)
 
 st.pyplot(fig)
 
