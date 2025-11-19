@@ -75,27 +75,79 @@ col1_r1, col2_r1, col3_r1 = st.columns([1, 3, 1])
 with col1_r1:
     st.subheader("Random Forest Settings")
 
-    # K for Stratified K-Fold (bounded by smallest class size and max 10)
     k_folds = st.slider(
         "Number of Folds (K)",
         min_value=2,
         max_value=max_k_allowed,
         value=min(5, max_k_allowed),
-        help="Number of folds for Stratified K-Fold cross-validation.",
+        help="How many chunks (folds) the data is split into for cross-validation. "
+             "Higher K means more training runs but a more stable estimate of accuracy."
     )
 
-    n_estimators = st.slider("Number of Trees (n_estimators)", 50, 500, 200, step=10)
+    n_estimators = st.slider(
+        "Number of Trees (n_estimators)",
+        50,
+        500,
+        200,
+        step=10,
+        help="How many decision trees are in the forest. More trees usually improve stability, "
+             "but also take longer to train."
+    )
 
-    max_depth = st.slider("Max Depth (None = unlimited)", 1, 50, 15)
-    use_max_depth_none = st.checkbox("Disable max depth (use None)", value=False)
+    max_depth = st.slider(
+        "Max Depth (None = unlimited)",
+        1,
+        50,
+        15,
+        help="How many splits each tree is allowed to make from top to bottom. "
+             "Shallower trees are simpler and may generalize better."
+    )
 
-    min_samples_split = st.slider("Min Samples Split", 2, 20, 2)
-    min_samples_leaf = st.slider("Min Samples Leaf", 1, 10, 1)
+    use_max_depth_none = st.checkbox(
+        "Disable max depth (use None)",
+        value=False,
+        help="If checked, trees can grow as deep as they want until other stopping rules are hit."
+    )
 
-    criterion = st.selectbox("Split Criterion", ["gini", "entropy"], index=0)
-    max_features = st.selectbox("Max Features per Split", ["sqrt", "log2", "auto"], index=0)
+    min_samples_split = st.slider(
+        "Min Samples Split",
+        2,
+        20,
+        2,
+        help="The minimum number of data points required in a node before it can be split into children."
+    )
 
-    bootstrap = st.checkbox("Use Bootstrap Samples", value=True)
+    min_samples_leaf = st.slider(
+        "Min Samples Leaf",
+        1,
+        10,
+        1,
+        help="The minimum number of data points that must end up in a leaf node "
+             "(the final box at the bottom of a tree)."
+    )
+
+    criterion = st.selectbox(
+        "Split Criterion",
+        ["gini", "entropy"],
+        index=0,
+        help="The formula used to measure how 'mixed' a node is. "
+             "Both try to create purer groups of types after each split."
+    )
+
+    max_features = st.selectbox(
+        "Max Features per Split",
+        ["sqrt", "log2", "auto"],
+        index=0,
+        help="How many stats are considered at each split. Using fewer stats adds randomness and "
+             "can reduce overfitting."
+    )
+
+    bootstrap = st.checkbox(
+        "Use Bootstrap Samples",
+        value=True,
+        help="If checked, each tree is trained on a random sample (with replacement) of the data. "
+             "This is part of what makes a random forest work well."
+    )
 
     if use_max_depth_none:
         rf_max_depth = None
@@ -134,8 +186,6 @@ for train_idx, test_idx in kf.split(X, y_encoded):
     cm = confusion_matrix(y_test, y_pred, labels=range(len(class_names)))
     cm_total += cm
 
-mean_acc = float(np.mean(fold_accuracies))
-
 # Fit one model on the full data for feature importances
 rf_full = RandomForestClassifier(
     n_estimators=n_estimators,
@@ -155,6 +205,8 @@ feat_imp = (
     .sort_values("importance", ascending=False)
 )
 
+mean_acc = float(np.mean(fold_accuracies))
+
 with col2_r1:
     st.subheader("Confusion Matrix (Aggregated Across Folds)")
 
@@ -168,16 +220,17 @@ with col2_r1:
     )
 
     cm_fig.update_layout(
-    coloraxis_colorbar=dict(
-        thickness=10,
-        len=0.5,
-        xpad=0,
-        ypad=0,
-    ),
-    margin=dict(l=0, r=0, t=40, b=10),
-)
+        margin=dict(l=10, r=10, t=40, b=10),
+    )
 
     st.plotly_chart(cm_fig, use_container_width=True)
+
+    st.markdown(
+        f"<h3 style='text-align:center; margin-top: 0.5rem;'>"
+        f"Mean cross-validated accuracy: {mean_acc * 100:.2f}%"
+        f"</h3>",
+        unsafe_allow_html=True,
+    )
 
 with col3_r1:
     st.subheader("Feature Importances")
@@ -200,14 +253,7 @@ with col3_r1:
     st.plotly_chart(fig_imp, use_container_width=True)
 
 # ───────────────────────────
-# ROW 2 – simple accuracy print
-# ───────────────────────────
-st.divider()
-st.subheader("Model Accuracy Summary")
-st.write(f"Mean cross-validated accuracy over {k_folds} folds: **{mean_acc * 100:.2f}%**")
-
-# ───────────────────────────
-# ROW 3 – Decision Tree Visualization (simple filled tree at max depth=3)
+# ROW 2 – Decision Tree Visualization (simple filled tree at max depth=3)
 # ───────────────────────────
 from sklearn.tree import plot_tree
 
