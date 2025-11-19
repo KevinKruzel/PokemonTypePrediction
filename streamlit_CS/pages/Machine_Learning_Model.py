@@ -224,12 +224,12 @@ with col2_r1:
         x=class_names,
         y=class_names,
         text_auto=True,
-        color_continuous_scale="Blues",
-        labels=dict(color="Count", x="Predicted Type", y="True Type"),
+        color_continuous_scale="Reds",
+        labels=dict(color="Count", x="Predicted Primary Type", y="True Primary Type"),
     )
 
     cm_fig.update_layout(
-        margin=dict(l=10, r=10, t=40, b=10),
+        margin=dict(l=0, r=0, t=0, b=0),
     )
 
     st.plotly_chart(cm_fig, use_container_width=True)
