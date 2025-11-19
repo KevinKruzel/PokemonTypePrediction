@@ -225,7 +225,7 @@ with col_bar:
 # ───────────────────────────
 col1_r2, col2_r2 = st.columns(2)
 stat_boxplot(col1_r2, df_filtered, "hp", "HP")
-stat_boxplot(col1_r2, df_filtered, "attack", "Attack")
+stat_boxplot(col2_r2, df_filtered, "attack", "Attack")
 
 
 # ───────────────────────────
