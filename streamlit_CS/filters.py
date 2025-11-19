@@ -79,5 +79,4 @@ def apply_pokemon_filters(df: pd.DataFrame):
     if not include_dual_typed:
         df_filtered = df_filtered[df_filtered["is_mono-type"] == True]
 
-    st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
     return df_filtered
