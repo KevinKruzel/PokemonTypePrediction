@@ -7,6 +7,7 @@ import seaborn as sns
 import numpy as np
 from pathlib import Path
 from filters import apply_pokemon_filters
+from filters import TYPE_COLORS
 
 st.set_page_config(
     page_title="EDA Gallery",
