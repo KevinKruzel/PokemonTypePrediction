@@ -243,13 +243,12 @@ for node_id in range(tree_.node_count):
     )
 
     if is_leaf:
-        # Leaf node: fill with its predicted type color
-        color = TYPE_COLORS.get(pred_class, "#808080")
+        pred_class_key = str(pred_class).lower()
+        color = TYPE_COLORS.get(pred_class_key, "#808080")
         patch.set_facecolor(color)
         patch.set_edgecolor("black")
         patch.set_linewidth(2)
     else:
-        # Internal node: white background
         patch.set_facecolor("#FFFFFF")
         patch.set_edgecolor("black")
         patch.set_linewidth(1.5)
