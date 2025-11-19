@@ -178,14 +178,14 @@ st.subheader("Model Accuracy Summary")
 st.write(f"Mean cross-validated accuracy over {k_folds} folds: **{mean_acc * 100:.2f}%**")
 
 # ───────────────────────────
-# ROW 3 – Decision Tree Visualization (simple filled tree)
+# ROW 3 – Decision Tree Visualization (simple filled tree at max depth=3)
 # ───────────────────────────
 from sklearn.tree import plot_tree
 
 st.divider()
-st.subheader("Example Decision Tree from the Random Forest")
+st.subheader("Example Decision Tree from the Random Forest (Max Depth = 3 for display)")
 
-# Fit a Random Forest using current hyperparameters
+# Fit a Random Forest using current hyperparameters (unchanged)
 rf_viz = RandomForestClassifier(
     n_estimators=n_estimators,
     max_depth=rf_max_depth,
@@ -199,19 +199,21 @@ rf_viz = RandomForestClassifier(
 
 rf_viz.fit(X, y_encoded)
 
-# Take one tree to visualize
+# Extract one tree
 tree_clf = rf_viz.estimators_[0]
 
+# Visualize only top part of the tree: max depth = 3
 fig, ax = plt.subplots(figsize=(22, 12))
 
 plot_tree(
     tree_clf,
     feature_names=STAT_COLS,
     class_names=class_names,
-    filled=True,       # sklearn handles coloring
+    filled=True,       # sklearn colors based on class majority
     rounded=True,
     impurity=True,
     fontsize=10,
+    max_depth=3,       # << limit display depth to 3
     ax=ax,
 )
 
