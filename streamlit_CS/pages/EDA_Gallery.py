@@ -107,6 +107,8 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
                 .tolist()
             )
 
+            overall_mean = df_filtered[stat_col].mean()
+            
             fig_box = px.box(
                 df_filtered,
                 x="primary_type",
@@ -125,6 +127,24 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
                     marker_line_color=c,
                     line_color=c,
                 )
+
+            fig_box.add_shape(
+                type="line",
+                x0=-0.5,
+                x1=len(type_order)-0.5,
+                y0=overall_mean,
+                y1=overall_mean,
+                line=dict(color="black", width=2, dash="dash"),
+            )
+
+            fig_box.add_annotation(
+                x=len(type_order)-0.5,
+                y=overall_mean,
+                text=f"Mean: {overall_mean:.1f}",
+                showarrow=False,
+                yshift=10,
+                font=dict(color="black"),
+            )
 
             fig_box.update_layout(
                 xaxis_title="Primary Type",
