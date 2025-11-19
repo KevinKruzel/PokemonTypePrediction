@@ -177,12 +177,12 @@ st.subheader("Model Accuracy Summary")
 st.write(f"Mean cross-validated accuracy over {k_folds} folds: **{mean_acc * 100:.2f}%**")
 
 # ───────────────────────────
-# ROW 3 – Decision Tree Visualization (Option B)
+# ROW 3 – Decision Tree Visualization (leaf nodes = type color)
 # ───────────────────────────
 st.divider()
 st.subheader("Example Decision Tree from the Random Forest")
 
-# Fit RF for visualization (no random state so it changes each run unless user sets params)
+# Fit a Random Forest using current hyperparameters (no random_state so it can vary)
 rf_viz = RandomForestClassifier(
     n_estimators=n_estimators,
     max_depth=rf_max_depth,
@@ -196,44 +196,62 @@ rf_viz = RandomForestClassifier(
 
 rf_viz.fit(X, y_encoded)
 
+# Take one tree to visualize
 tree_clf = rf_viz.estimators_[0]
 tree_ = tree_clf.tree_
 
 fig, ax = plt.subplots(figsize=(22, 12))
 
-# Plot initial tree
+# IMPORTANT: filled=False so we fully control the colors
 artists = plot_tree(
     tree_clf,
     feature_names=STAT_COLS,
     class_names=class_names,
-    filled=True,
+    filled=False,
     rounded=True,
     impurity=True,
-    fontsize=12,      # reset font size
+    fontsize=12,
     ax=ax,
 )
 
-# Re-color leaves only
-node_values = tree_.value
+node_values = tree_.value  # shape: (n_nodes, n_classes)
+patch_index = 0
 
-for node_index, artist in enumerate(artists):
-    # Identify if it's a box representing a node
-    if isinstance(artist, plt.matplotlib.patches.FancyBboxPatch):
-        counts = node_values[node_index][0]
-        total = counts.sum()
-        pred_class_idx = counts.argmax()
-        pred_class = class_names[pred_class_idx]
+# Go through nodes in tree order and pair them with their corresponding box patch
+for node_id in range(tree_.node_count):
+    # Find the next FancyBboxPatch in artists (patch for this node)
+    while patch_index < len(artists) and not isinstance(
+        artists[patch_index], mpatches.FancyBboxPatch
+    ):
+        patch_index += 1
 
-        # if leaf: solid type color
-        if tree_.children_left[node_index] == tree_.children_right[node_index] == -1:
-            artist.set_facecolor(TYPE_COLORS.get(pred_class, "#808080"))
-            artist.set_edgecolor("black")
-            artist.set_linewidth(2)
-        else:
-            # internal nodes white
-            artist.set_facecolor("white")
-            artist.set_edgecolor("black")
-            artist.set_linewidth(1.5)
+    if patch_index >= len(artists):
+        break  # safety
+
+    patch = artists[patch_index]
+    patch_index += 1
+
+    # Predicted class at this node (most common class)
+    counts = node_values[node_id][0]
+    pred_idx = counts.argmax()
+    pred_class = class_names[pred_idx]
+
+    is_leaf = (
+        tree_.children_left[node_id] == -1
+        and tree_.children_right[node_id] == -1
+    )
+
+    if is_leaf:
+        # Leaf node: fill with its predicted type color
+        color = TYPE_COLORS.get(pred_class, "#808080")
+        patch.set_facecolor(color)
+        patch.set_edgecolor("black")
+        patch.set_linewidth(2)
+    else:
+        # Internal node: white background
+        patch.set_facecolor("#FFFFFF")
+        patch.set_edgecolor("black")
+        patch.set_linewidth(1.5)
 
 st.pyplot(fig)
 
