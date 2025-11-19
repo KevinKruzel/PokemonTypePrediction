@@ -70,7 +70,7 @@ max_k_allowed = max(2, min(10, min_class_count))
 # ───────────────────────────
 # ROW 1 – controls (col 1) + confusion matrix (col 2) + feature importances (col 3)
 # ───────────────────────────
-col1_r1, col2_r1, col3_r1 = st.columns([1, 2, 1])
+col1_r1, col2_r1, col3_r1 = st.columns([1, 3, 1])
 
 with col1_r1:
     st.subheader("Random Forest Settings")
