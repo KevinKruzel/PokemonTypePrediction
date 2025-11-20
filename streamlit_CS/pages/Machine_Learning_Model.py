@@ -245,7 +245,10 @@ with col2_r1:
         unsafe_allow_html=True,
     )
     
-    st.subheader("Confusion Matrix (Aggregated Across Folds)")
+    st.markdown(
+    "<h3 style='text-align:center;'>Confusion Matrix</h3>",
+    unsafe_allow_html=True
+    )
 
     cm_fig = px.imshow(
         cm_total,
