@@ -240,7 +240,7 @@ mean_acc = float(np.mean(fold_accuracies))
 with col2_r1:
     st.markdown(
         f"<h2 style='text-align:center; margin-top: 0.5rem;'>"
-        f"Model Accuracy: {mean_acc * 100:.2f}%"
+        f"* Model Accuracy: {mean_acc * 100:.2f}% *"
         f"</h2>",
         unsafe_allow_html=True,
     )
