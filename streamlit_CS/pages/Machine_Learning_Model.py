@@ -42,11 +42,6 @@ st.markdown("""
 This page uses a **Random Forest** machine learning model to predict a Pokémon’s **primary type** based on its six base stats.  
 The model is evaluated using **Stratified K-Fold Cross-Validation**, and its results are visualized through a **confusion matrix** and an overall **accuracy score**.  
 You can adjust the model’s parameters in the sidebar to see how tuning affects performance.
-
-From the results above, we see that predicting a Pokémon’s primary type using only its base stats is challenging for a Random Forest model. 
-The confusion matrix highlights that many types are frequently misclassified as others with similar stat profiles, resulting in a relatively low overall accuracy. 
-The feature importance chart shows that certain stats tend to influence predictions more strongly than others, but not by a wide margin. 
-These findings suggest that base stats alone do not uniquely differentiate most Pokémon types, and additional features not included in this model may be needed to build a more accurate classification model.
 """)
 st.divider()
 
@@ -296,6 +291,13 @@ with col3_r1:
 
     st.plotly_chart(fig_imp, use_container_width=True)
 
+st.markdown("""
+From the results above, we see that predicting a Pokémon’s primary type using only its base stats is challenging for a Random Forest model. 
+The confusion matrix highlights that many types are frequently misclassified as others with similar stat profiles, resulting in a relatively low overall accuracy. 
+The feature importance chart shows that certain stats tend to influence predictions more strongly than others, but not by a wide margin. 
+These findings suggest that base stats alone do not uniquely differentiate most Pokémon types, and additional features not included in this model may be needed to build a more accurate classification model.
+""")
+
 # ───────────────────────────
 # ROW 2 – Decision Tree Visualization (simple filled tree at max depth=3)
 # ───────────────────────────
@@ -304,7 +306,7 @@ from sklearn.tree import plot_tree
 st.divider()
 st.subheader("Example Decision Tree from the Random Forest (Max Depth = 3 for display)")
 
-# Fit a Random Forest using current hyperparameters (unchanged)
+# Fit a Random Forest using current hyperparameters
 rf_viz = RandomForestClassifier(
     n_estimators=n_estimators,
     max_depth=rf_max_depth,
