@@ -292,10 +292,12 @@ with col3_r1:
     st.plotly_chart(fig_imp, use_container_width=True)
 
 st.markdown("""
+
 From the results above, we see that predicting a Pokémon’s primary type using only its base stats is challenging for a Random Forest model. 
 The confusion matrix highlights that many types are frequently misclassified as others with similar stat profiles, resulting in a relatively low overall accuracy. 
 The feature importance chart shows that certain stats tend to influence predictions more strongly than others, but not by a wide margin. 
 These findings suggest that base stats alone do not uniquely differentiate most Pokémon types, and additional features not included in this model may be needed to build a more accurate classification model.
+Despite the relatively low accuracy score of ~21%, this model is still an improvement over random predictions. A random prediction with 18 categories would yield an accuracy of ~5.5%.
 """)
 
 # ───────────────────────────
