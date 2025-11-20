@@ -55,6 +55,16 @@ if df_filtered["primary_type"].nunique() < 2:
 STAT_COLS = ["hp", "attack", "defense", "special-attack", "special-defense", "speed"]
 
 df_ml = df_filtered.dropna(subset=STAT_COLS + ["primary_type"]).copy()
+
+# Extra guards: after dropna + filters we still need data and ≥ 2 classes
+if df_ml.empty:
+    st.warning("Not enough Pokémon with complete stat data after filtering to train a model.")
+    st.stop()
+
+if df_ml["primary_type"].nunique() < 2:
+    st.warning("Not enough different primary types in the filtered data to train a classifier.")
+    st.stop()
+
 X = df_ml[STAT_COLS].values
 y = df_ml["primary_type"].values
 
@@ -62,12 +72,16 @@ label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 class_names = list(label_encoder.classes_)
 
-# For K-fold upper bound, we need class counts
-class_counts = pd.Series(y).value_counts()
-min_class_count = int(class_counts.min())
-max_k_allowed = max(2, min(10, min_class_count))
+# For K-fold upper bound, we need class counts *from the filtered data*
+class_counts = df_ml["primary_type"].value_counts()
+min_class_count = int(class_counts.min())  # smallest class size
 
+# Base K on the rarest class, capped at 10
+max_k_allowed = min(10, min_class_count)
 
+# Make sure K is at least 2 so StratifiedKFold works
+if max_k_allowed < 2:
+    max_k_allowed = 2
 
 # ───────────────────────────
 # ROW 1 – controls (col 1) + confusion matrix (col 2) + feature importances (col 3)
@@ -77,14 +91,23 @@ col1_r1, col2_r1, col3_r1 = st.columns([1, 3, 1])
 with col1_r1:
     st.subheader("Random Forest Settings")
 
-    k_folds = st.slider(
-        "Number of Folds (K)",
-        min_value=2,
-        max_value=max_k_allowed,
-        value=min(5, max_k_allowed),
-        help="How many chunks (folds) the data is split into for cross-validation. "
-             "Higher K means more training runs but a more stable estimate of accuracy."
-    )
+    if max_k_allowed == 2:
+        k_folds = 2
+        st.caption(
+            "Using K = 2 (minimum allowed) because at least one primary type is very rare "
+            "with the current filters."
+        )
+    else:
+        k_folds = st.slider(
+            "Number of Folds (K)",
+            min_value=2,
+            max_value=max_k_allowed,
+            value=min(5, max_k_allowed),
+            help=(
+                "How many chunks (folds) the data is split into for cross-validation. "
+                "Higher K means more training runs but a more stable estimate of accuracy."
+            ),
+        )
 
     n_estimators = st.slider(
         "Number of Trees (n_estimators)",
