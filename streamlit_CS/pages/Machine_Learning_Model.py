@@ -142,7 +142,12 @@ with col1_r1:
     index=0,
     help="How many stats are considered at each split. 'sqrt' and 'log2' introduce randomness. "
          "'None' means all features are always used."
-)
+    )
+
+    if max_features_choice == "None":
+        rf_max_features = None
+    else:
+        rf_max_features = max_features_choice
 
     bootstrap = st.checkbox(
         "Use Bootstrap Samples",
