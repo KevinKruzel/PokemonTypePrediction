@@ -112,7 +112,7 @@ with col1_r1:
     n_estimators = st.slider(
         "Number of Trees (n_estimators)",
         10,
-        400,
+        1000,
         200,
         step=10,
         help="How many decision trees are in the forest. More trees usually improve stability, "
