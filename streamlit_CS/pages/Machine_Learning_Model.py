@@ -120,7 +120,7 @@ with col1_r1:
     )
 
     max_depth = st.slider(
-        "Max Depth (None = unlimited)",
+        "Max Tree Depth",
         1,
         20,
         10,
@@ -129,7 +129,7 @@ with col1_r1:
     )
 
     use_max_depth_none = st.checkbox(
-        "Disable Max Depth",
+        "Disable Max Tree Depth",
         value=False,
         help="If checked, trees can grow as deep as they want until other stopping rules are hit."
     )
