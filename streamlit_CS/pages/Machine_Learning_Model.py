@@ -280,6 +280,7 @@ with col2_r1:
         xaxis_title="Stat",
         yaxis_title="Importance",
         margin=dict(l=10, r=10, t=40, b=10),
+        height=250
     )
 
     st.plotly_chart(fig_imp, use_container_width=True)
