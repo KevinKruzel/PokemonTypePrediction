@@ -86,7 +86,7 @@ if max_k_allowed < 2:
 # ───────────────────────────
 # ROW 1 – controls (col 1) + confusion matrix (col 2) + feature importances (col 3)
 # ───────────────────────────
-col1_r1, col2_r1, col3_r1 = st.columns([1, 3, 1])
+col1_r1, col2_r1, col3_r1 = st.columns([1, 2, 1])
 
 with col1_r1:
     st.subheader("Random Forest Settings")
