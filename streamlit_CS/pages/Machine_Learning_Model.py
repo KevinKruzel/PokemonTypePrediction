@@ -122,8 +122,8 @@ with col1_r1:
     max_depth = st.slider(
         "Max Depth (None = unlimited)",
         1,
-        30,
-        15,
+        20,
+        10,
         help="How many splits each tree is allowed to make from top to bottom. "
              "Shallower trees are simpler and may generalize better."
     )
