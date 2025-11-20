@@ -256,7 +256,7 @@ with col2_r1:
         y=class_names,
         text_auto=True,
         aspect="auto",
-        color_continuous_scale="Viridis",
+        color_continuous_scale="Viridis_r",
         labels=dict(color="Count", x="Predicted Primary Type", y="True Primary Type"),
     )
 
