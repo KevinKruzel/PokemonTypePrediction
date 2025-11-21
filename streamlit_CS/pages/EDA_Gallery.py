@@ -453,8 +453,9 @@ with col2_r5:
                 margin=dict(l=10, r=10, t=40, b=10),
                 legend_title="Primary Type",
             )
-    st.divider()
-    st.footer("Data was collected using pokeapi found here: https://pokeapi.co/")
 
             # Display the scatterplot chart
             st.plotly_chart(fig_scatter, use_container_width=True)
+
+    st.divider()
+    st.caption("Data was collected using pokeapi found here: https://pokeapi.co/")
