@@ -123,6 +123,7 @@ For those who are curious about the distribution of Pokémon by their primary an
 The distribution of Pokémon by only their primary type can be see in the bar chart below. The key observation about this that can be made is the large
 disparity between the amount of types. This inbalance makes certain prediction models like K-Nearest Neighbors unsuitable.
 """, unsafe_allow_html=True)
+st.divider()
 
 col_heatmap, col_bar = st.columns([3, 2])  # 3/5 width and 2/5 width
 
