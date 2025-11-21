@@ -254,7 +254,7 @@ Users can select any amount of type groups and two base stats to compare the dis
 <br>
 
 One of the clearest and biggest examples of two types being distinctly different is presented in the default values selected here: The distribution of fighting and psychic Pokémon's
-attack and special attack stats. Fighting type Pokémon have distinctly high attack and low special attack, whereas psychic Pokémon are the opposite.
+attack and special attack stats. Fighting type Pokémon have distinctly high attack and low special attack, whereas psychic type Pokémon are the opposite.
 """, unsafe_allow_html=True)
 st.divider()
 
