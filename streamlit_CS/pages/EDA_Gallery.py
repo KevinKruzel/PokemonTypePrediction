@@ -457,5 +457,5 @@ with col2_r5:
             # Display the scatterplot chart
             st.plotly_chart(fig_scatter, use_container_width=True)
 
-    st.divider()
-    st.caption("Data was collected using pokeapi found here: https://pokeapi.co/")
+st.divider()
+st.caption("Data was collected using pokeapi found here: https://pokeapi.co/")
