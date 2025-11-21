@@ -218,7 +218,7 @@ with col_bar:
         
 st.divider()
 # ───────────────────────────
-# ROW 2 – HP, Attack
+# ROW 2-4 Boxplots
 # ───────────────────────────
 st.subheader("Visualizing the Difference in the Base Stats of Pokémon by Primary Type")
 st.markdown("""
@@ -228,28 +228,36 @@ representing the overall mean value of that stat across all Pokémon in the filt
 After looking at the boxplots, it is clear to see that while there is significant overlap between types, there is sufficient evidence to say that each type is distinct enough to warrant using our machine learning model.
 """)
 st.divider()
+
 col1_r2, col2_r2 = st.columns(2)
 stat_boxplot(col1_r2, df_filtered, "hp", "HP")
 stat_boxplot(col2_r2, df_filtered, "attack", "Attack")
 
-
-# ───────────────────────────
-# ROW 3 – Defense, Special Attack
-# ───────────────────────────
 col1_r3, col2_r3 = st.columns(2)
 stat_boxplot(col1_r3, df_filtered, "defense", "Defense")
 stat_boxplot(col2_r3, df_filtered, "special-attack", "Special Attack")
 
-# ───────────────────────────
-# ROW 4 – Special Defense, Speed
-# ───────────────────────────
 col1_r4, col2_r4 = st.columns(2)
 stat_boxplot(col1_r4, df_filtered, "special-defense", "Special Defense")
 stat_boxplot(col2_r4, df_filtered, "speed", "Speed")
 
+st.divider()
+
 # ───────────────────────────
 # ROW 5 – Controls for Scatterplot and Scatterplot
 # ───────────────────────────
+st.subheader("Customizable Scatterplot")
+st.markdown("""
+The controls for creating a custom scatterplot are given below to further help visual the differences in Pokémon types.
+Users can select any amount of type groups and two base stats to compare the distribution of these values. You can also compare type group averages as well.
+
+<br>
+
+One of the clearest and biggest examples of two types being distinctly different is presented in the default values selected here: The distribution of fighting and psychic Pokémon's
+attack and special attack stats. Fighting type Pokémon have distinctly high attack and low special attack, whereas psychic Pokémon are the opposite.
+""", unsafe_allow_html=True)
+st.divider()
+
 col1_r5, col2_r5 = st.columns([1, 2])  # 1/3 width and 2/3 width
 
 # Scatterplot Controls
