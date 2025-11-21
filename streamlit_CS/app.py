@@ -31,9 +31,11 @@ Use the **sidebar** to switch between pages:
   - View a type heatmap and bar chart to see the distribution of primary and secondary types of Pokemon
   - View a series of boxplots to visualize the differences in distribution of Pokémon stats grouped by type.
   - Create a fully customizable scatterplot to explore the distribution of two select stats for all Pokémon in select type groups.
-
-<br>
-
+    """
+)
+st.markdown()
+st.markdown(
+    """
 - ⚙️ **Machine Learning Model**  
   Build and evaluate a Random Forest model that predicts a Pokémon’s primary type.  
   - Adjust model hyperparameters (number of trees, depth, max features, etc.).
@@ -42,7 +44,7 @@ Use the **sidebar** to switch between pages:
   - Inspect an example decision tree from the forest to better understand the model.
 
 Head over to the other pages in the sidebar to start exploring.
-"""
+    """
 )
 
 st.caption("Built with Streamlit")
