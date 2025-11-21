@@ -31,7 +31,7 @@ df_filtered = apply_pokemon_filters(df)
 # ───────────────────────────
 # PAGE HEADER
 # ───────────────────────────
-st.title("Exploratory Data Analysis Gallery")
+st.title("📊 Exploratory Data Analysis Gallery")
 st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
 st.markdown("""
 This page serves the purpose of allowing us to explore the data first and make an informed decision about the type of prediction model
