@@ -33,6 +33,10 @@ df_filtered = apply_pokemon_filters(df)
 # ───────────────────────────
 st.title("Exploratory Data Analysis Gallery")
 st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
+st.markdown("""
+This page serves the purpose of allowing us to explore the data first and make an informed decision about the type of prediction model
+we want to use to determine a Pokémon's type given its six base stats: HP, Attack, Defense, Special Attack, Special Defense, and Speed.
+""")
 st.divider()
 
 # ───────────────────────────
