@@ -17,7 +17,7 @@ six base stats (HP, Attack, Defense, Special Attack, Special Defense, and Speed)
 
 This app uses interactive tools to explore the dataset and customize the Random Forest model used to predict a Pokémon’s primary type.
 Use the sidebar to filter the dataset to specific Pokémon to explore how these filters affect the distribution of the data and the accuracy of the model.
-    """
+"""
 )
 
 st.markdown("---")
@@ -31,9 +31,10 @@ Use the **sidebar** to switch between pages:
   - View a type heatmap and bar chart to see the distribution of primary and secondary types of Pokemon
   - View a series of boxplots to visualize the differences in distribution of Pokémon stats grouped by type.
   - Create a fully customizable scatterplot to explore the distribution of two select stats for all Pokémon in select type groups.
-    """
+
+<br>
+"""
 )
-st.markdown()
 st.markdown(
     """
 - ⚙️ **Machine Learning Model**  
@@ -44,7 +45,7 @@ st.markdown(
   - Inspect an example decision tree from the forest to better understand the model.
 
 Head over to the other pages in the sidebar to start exploring.
-    """
+"""
 )
 
 st.caption("Built with Streamlit")
