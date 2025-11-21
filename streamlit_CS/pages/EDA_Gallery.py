@@ -114,12 +114,20 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
 # ───────────────────────────
 # ROW 1
 # ───────────────────────────
+st.subheader("Exploring the Amount of Pokémon by Type")
+st.markdown("""
+For those who are unaware, Pokémon can have one or two types. The initial goal of the project was to be able to predict a Pokémon's typing (so if a Pokémon was dual-typed,
+the model would be able to predict both). However, for simplicity's sake and for easier visualization, we will only be evaluating Pokémon by their **primary** type.
+For those who are curious about the distribution of Pokémon by their primary and secondary type, it can be visualized in the heatmap below.
+<br>
+The distribution of Pokémon by only their primary type can be see in the bar chart below. The key observation about this that can be made is the large
+disparity between the amount of types. This inbalance makes certain prediction models like K-Nearest Neighbors unsuitable.
+""", unsafe_allow_html=True)
+
 col_heatmap, col_bar = st.columns([3, 2])  # 3/5 width and 2/5 width
 
 # Heatmap that shows the amount of Pokemon in each primary and secondary type combination
 with col_heatmap:
-    st.subheader("Type Combination Heatmap")
-
     # Check first if there are no Pokemon to chart
     if df_filtered.empty:
         st.warning("No Pokémon available for the selected filters.")
@@ -172,8 +180,6 @@ with col_heatmap:
 
 # Bar chart that displays the amount of Pokemon in each primary type group
 with col_bar:
-    st.subheader("Number of Pokémon by Primary Type")
-
     # Check first if there are no Pokemon to chart
     if df_filtered.empty:
         st.warning("No Pokémon available for the selected filters.")
