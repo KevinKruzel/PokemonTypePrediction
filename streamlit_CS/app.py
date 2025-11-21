@@ -41,6 +41,8 @@ Use the **sidebar** to switch between pages:
   - See feature importance in a bar chart to understand which stats matter most.
   - Inspect an example decision tree from the forest to better understand the model.
 
+<br>
+
 Head over to the other pages in the sidebar to start exploring.
 """,
     unsafe_allow_html=True,
