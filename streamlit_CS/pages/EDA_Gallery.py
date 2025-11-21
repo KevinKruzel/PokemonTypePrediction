@@ -25,6 +25,7 @@ st.set_page_config(
 DATA_PATH = Path(__file__).parent.parent / "data" / "pokemon_dataset.csv"
 df = pd.read_csv(DATA_PATH)
 
+# Apply filters from sidebar
 df_filtered = apply_pokemon_filters(df)
 
 # ───────────────────────────
@@ -35,13 +36,14 @@ st.caption(f"Current filters: {len(df_filtered)} Pokémon selected.")
 st.divider()
 
 # ───────────────────────────
-# BOXPLOT FUNCTION
+# BOXPLOT FUNCTION (To be used six times on this page)
 # ───────────────────────────
 def stat_boxplot(container, df_filtered, stat_col, stat_label):
     with container:
         if df_filtered.empty:
             st.warning("No Pokémon available for the selected filters.")
         else:
+            # Define the order the boxplots will be arranged, which is in ascending order by their mean
             type_order = (
                 df_filtered.groupby("primary_type")[stat_col]
                 .mean()
@@ -50,8 +52,10 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
                 .tolist()
             )
 
+            # Calculate the overall mean of all Pokemon
             overall_mean = df_filtered[stat_col].mean()
-            
+
+            # Create the boxplot chart
             fig_box = px.box(
                 df_filtered,
                 x="primary_type",
@@ -62,6 +66,7 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
                 color_discrete_map=TYPE_COLORS,
             )
 
+            # Make the color of each boxplot correspond the group's type
             for trace in fig_box.data:
                 t = trace.name
                 c = TYPE_COLORS.get(t, "#808080")
@@ -71,6 +76,7 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
                     line_color=c,
                 )
 
+            # Add the overall mean line to the chart
             fig_box.add_shape(
                 type="line",
                 x0=-0.5,
@@ -80,6 +86,7 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
                 line=dict(color="red", width=2, dash="dash"),
             )
 
+            # Add the label of the overall mean line to the chart
             fig_box.add_annotation(
                 x=len(type_order)-0.5,
                 y=overall_mean,
@@ -89,6 +96,7 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
                 font=dict(color="red"),
             )
 
+            # Adjust features of the chart
             fig_box.update_layout(
                 xaxis_title="Primary Type",
                 yaxis_title=stat_label,
@@ -96,6 +104,7 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
                 showlegend=False,
             )
 
+            # Display the chart
             st.plotly_chart(fig_box, use_container_width=True)
 
 # ───────────────────────────
@@ -206,13 +215,15 @@ stat_boxplot(col1_r4, df_filtered, "special-defense", "Special Defense")
 stat_boxplot(col2_r4, df_filtered, "speed", "Speed")
 
 # ───────────────────────────
-# ROW 5 – controls + scatter
+# ROW 5 – Controls for Scatterplot and Scatterplot
 # ───────────────────────────
 col1_r5, col2_r5 = st.columns([1, 2])  # 1/3 width and 2/3 width
 
+# Scatterplot Controls
 with col1_r5:
     st.subheader("Scatterplot Controls")
 
+    # Map the "pretty" to the "ugly" type names
     stat_labels = {
         "HP": "hp",
         "Attack": "attack",
@@ -222,6 +233,7 @@ with col1_r5:
         "Speed": "speed",
     }
 
+    # Selectbox to decide which type of points to graph, defaults to "Individual Pokémon Only"
     display_mode = st.selectbox(
         "Points to Display",
         [
@@ -233,6 +245,7 @@ with col1_r5:
         help="Individual Pokémon will appear as small data points. Type averages will appear as large data points."
     )
 
+    # Selectboxes to decide which of the six stats to represent the two axes of the scatterplot, defaults to "Attack" and "Special Attack"
     x_label = st.selectbox(
         "X-Axis Stat",
         list(stat_labels.keys()),
@@ -244,57 +257,64 @@ with col1_r5:
         index=list(stat_labels.keys()).index("Special Attack")
     )
 
+    # Use the naming map to make the "ugly" stat names "pretty"
     x_stat = stat_labels[x_label]
     y_stat = stat_labels[y_label]
 
+    # Checkbox to plot a y = x line on the chart, defaults to False
     show_diag_line = st.checkbox(
         "Show Y = X Reference Line",
         value=False,
         help="When checked, draws a diagonal line where the two stats are equal."
     )
 
+    # Subsection of the controls that includes checkboxes to decide which type groups are included
     st.markdown("**Types to Include**")
-
     type_col1, type_col2, type_col3 = st.columns(3)
 
-    selected_types = []
+    # Create a checkbox for each type, arranged into 3 columns alphabetically, defaults to having Psychic and Fighting being set to True
     sorted_types = sorted(TYPE_COLORS.keys())
     third = len(sorted_types) // 3
+    selected_types = []
 
     with type_col1:
         for t in sorted_types[:third]:
             default_checked = (t in ["fighting", "psychic"])
             if st.checkbox(t.capitalize(), value=default_checked, key=f"type_{t}"):
                 selected_types.append(t)
-
     with type_col2:
         for t in sorted_types[third: third*2]:
             default_checked = (t in ["fighting", "psychic"])
             if st.checkbox(t.capitalize(), value=default_checked, key=f"type_{t}_2"):
                 selected_types.append(t)
-
     with type_col3:
         for t in sorted_types[third*2:]:
             default_checked = (t in ["fighting", "psychic"])
             if st.checkbox(t.capitalize(), value=default_checked, key=f"type_{t}_3"):
                 selected_types.append(t)
 
+# Scatterplot
 with col2_r5:
     st.subheader("Stat vs Stat Scatterplot")
 
+    # Display an error message if there are no Pokemon to chart given the selected filters
     if df_filtered.empty:
         st.warning("No Pokémon available for the selected filters.")
     else:
         df_scatter = df_filtered.copy()
 
+        # Set the selected types given the status of the checkboxes
         if selected_types:
             df_scatter = df_scatter[df_scatter["primary_type"].isin(selected_types)]
         else:
             df_scatter = df_scatter.iloc[0:0]
 
+        # Display an error message if there are no Pokemon to chart given the status of the checkboxes
         if df_scatter.empty:
             st.warning("No Pokémon match the selected types.")
         else:
+
+            # Section of code to chart indiviudal Pokemon, will activate if "both" is selected as well
             if display_mode in ("Individual Pokémon Only", "Both Individuals and Averages"):
                 fig_scatter = px.scatter(
                     df_scatter,
@@ -334,6 +354,7 @@ with col2_r5:
                     },
                 )
 
+            # Section of code to chart type averages, will activate if "both" is selected as well
             if display_mode in ("Type Averages Only", "Both Individuals and Averages"):
                 type_means = (
                     df_scatter
@@ -357,6 +378,7 @@ with col2_r5:
                         showlegend=False,
                     )
 
+            # Display the y = x line if it was selected in the checkbox
             if show_diag_line:
                 df_scatter[x_stat] = pd.to_numeric(df_scatter[x_stat], errors="coerce")
                 df_scatter[y_stat] = pd.to_numeric(df_scatter[y_stat], errors="coerce")
@@ -383,6 +405,7 @@ with col2_r5:
                         name="y = x",
                     )
 
+            # Adjust features of the chart
             fig_scatter.update_layout(
                 xaxis_title=x_label,
                 yaxis_title=y_label,
@@ -390,4 +413,5 @@ with col2_r5:
                 legend_title="Primary Type",
             )
 
+            # Display the scatterplot chart
             st.plotly_chart(fig_scatter, use_container_width=True)
