@@ -117,7 +117,7 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
 st.subheader("Exploring the Amount of Pokémon by Type")
 st.markdown("""
 For those who are unaware, Pokémon can have one or two types. The initial goal of the project was to be able to predict a Pokémon's typing (so if a Pokémon was dual-typed,
-the model would be able to predict both). However, for simplicity's sake and for easier visualization, we will only be evaluating Pokémon by their **primary** type.
+the model would be able to predict both). However, for simplicity's sake and for easier visualization, we will only be evaluating Pokémon by their **primary** type, which is the first one listed.
 For those who are curious about the distribution of Pokémon by their primary and secondary type, it can be visualized in the heatmap below.
 <br>
 The distribution of Pokémon by only their primary type can be see in the bar chart below. The key observation about this that can be made is the large
@@ -223,7 +223,7 @@ st.divider()
 st.subheader("Visualizing the Difference in the Base Stats of Pokémon by Primary Type")
 st.markdown("""
 The underlying assumption about employing this model for the purposes of predicting a Pokémon's type using it's base stats is that each type of Pokémon has distinct differences.
-The boxplots created below aim to visual these differences between types. Each plot represents one of base stats, and includes a dashed red line that serves the purpose of
+The boxplots created below aim to visual these differences between types. Each plot represents one of the base stats, and includes a dashed red line that serves the purpose of
 representing the overall mean value of that stat across all Pokémon in the filtered dataset. The types are sorted in ascending order by their mean value.
 After looking at the boxplots, it is clear to see that while there is significant overlap between types, there is sufficient evidence to say that each type is distinct enough to warrant using our machine learning model.
 """)
@@ -248,7 +248,7 @@ st.divider()
 # ───────────────────────────
 st.subheader("Customizable Scatterplot")
 st.markdown("""
-The controls for creating a custom scatterplot are given below to further help visual the differences in Pokémon types.
+The controls for creating a custom scatterplot are given below to further help visualize the differences in Pokémon types.
 Users can select any amount of type groups and two base stats to compare the distribution of these values. You can also compare type group averages as well.
 
 <br>
