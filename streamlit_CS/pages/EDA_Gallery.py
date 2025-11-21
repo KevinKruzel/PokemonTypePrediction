@@ -463,6 +463,6 @@ csv_data = df.to_csv(index=False).encode('utf-8')
 st.download_button(
     label="📥 Download Raw Data (CSV)",
     data=csv_data,
-    file_name="StudentPerformanceFactors.csv",
+    file_name="pokemon_dataset.csv",
     mime="text/csv",
 )
