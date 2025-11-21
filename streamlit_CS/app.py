@@ -10,20 +10,17 @@ st.set_page_config(
 st.title("Machine Learning Final Project – Pokémon Type Prediction")
 st.markdown("#### by Kevin Kruzel")
 
-st.markdown(
-    """
+st.markdown("""
 The goal of this project to see how well we can predict a Pokémon’s primary type using only its
 six base stats (HP, Attack, Defense, Special Attack, Special Defense, and Speed) by using a machine learning model.
 
 This app uses interactive tools to explore the dataset and customize the Random Forest model used to predict a Pokémon’s primary type.
 Use the sidebar to filter the dataset to specific Pokémon to explore how these filters affect the distribution of the data and the accuracy of the model.
-"""
-)
+""")
 
 st.divider()
 
-st.markdown(
-    """
+st.markdown("""
 Use the **sidebar** to switch between pages:
 
 - 📊 **EDA Gallery**  - Explore the Pokémon dataset with interactive visualizations.  
@@ -42,9 +39,7 @@ Use the **sidebar** to switch between pages:
 <br>
 
 Head over to the other pages in the sidebar to start exploring.
-""",
-    unsafe_allow_html=True,
-)
+""", unsafe_allow_html=True)
 
 st.divider()
 st.caption("Built with Streamlit")
