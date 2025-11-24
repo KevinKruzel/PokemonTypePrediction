@@ -56,7 +56,7 @@ def get_pokemon_stats(df: pd.DataFrame, pokemon_id: int) -> pd.DataFrame:
 
     return pd.DataFrame({"Stat": list(stats.keys()), "Value": list(stats.values())})
 
-def stat_bar_chart(stats_df: pd.DataFrame, title: str):
+def stat_bar_chart(stats_df: pd.DataFrame):
     fig = px.bar(
         stats_df,
         x="Value",
@@ -64,7 +64,7 @@ def stat_bar_chart(stats_df: pd.DataFrame, title: str):
         orientation="h",
         color="Stat",
         color_discrete_map=STAT_COLORS,
-        text="Value",   # use value labels inside bars
+        text="Value",
     )
 
     fig.update_traces(
@@ -74,8 +74,8 @@ def stat_bar_chart(stats_df: pd.DataFrame, title: str):
     )
 
     fig.update_layout(
-        title=None,             # remove chart title
-        xaxis_title=None,       # remove axis label
+        title=None,
+        xaxis_title=None,
         yaxis_title=None,
         margin=dict(l=10, r=10, t=5, b=5),
         showlegend=False,
@@ -168,7 +168,7 @@ with col_pika:
 
     pika_stats = get_pokemon_stats(df, 25)  # Pikachu = ID 25
     if pika_stats is not None:
-        fig_pika = stat_bar_chart(pika_stats, "Pikachu – Base Stats")
+        fig_pika = stat_bar_chart(pika_stats)
         st.plotly_chart(fig_pika, use_container_width=True)
     else:
         st.warning("Could not find Pikachu in the dataset.")
@@ -191,7 +191,7 @@ with col_weezing:
     st.markdown("<div style='text-align:center; font-size:16px;'>Poison</div>", unsafe_allow_html=True)
     
     weezing_stats = get_pokemon_stats(df, 110)  # Weezing = ID 110
-    fig_weezing = stat_bar_chart(weezing_stats, "Weezing – Base Stats")
+    fig_weezing = stat_bar_chart(weezing_stats)
     st.plotly_chart(fig_weezing, use_container_width=True)
 
 # Charizard
@@ -212,5 +212,5 @@ with col_char:
     st.markdown("<div style='text-align:center; font-size:16px;'>Fire / Flying</div>", unsafe_allow_html=True)
     
     char_stats = get_pokemon_stats(df, 6)  # Charizard = ID 6
-    fig_char = stat_bar_chart(char_stats, "Charizard – Base Stats")
+    fig_char = stat_bar_chart(char_stats)
     st.plotly_chart(fig_char, use_container_width=True)
