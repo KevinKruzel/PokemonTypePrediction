@@ -109,7 +109,7 @@ def stat_boxplot(container, df_filtered, stat_col, stat_label):
             )
 
             # Display the chart
-            st.plotly_chart(fig_box, use_container_width=True)
+            st.plotly_chart(fig_box, use_container_width=True, config={"displayModeBar": "hover"})
 
 # ───────────────────────────
 # ROW 1
@@ -177,7 +177,7 @@ with col_heatmap:
             margin=dict(l=10, r=10, t=40, b=10),
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
 # Bar chart that displays the amount of Pokemon in each primary type group
 with col_bar:
@@ -214,7 +214,7 @@ with col_bar:
         )
 
         # Display the bar chart
-        st.plotly_chart(fig_bar, use_container_width=True)
+        st.plotly_chart(fig_bar, use_container_width=True, config={"displayModeBar": False})
         
 st.divider()
 # ───────────────────────────
@@ -455,7 +455,7 @@ with col2_r5:
             )
 
             # Display the scatterplot chart
-            st.plotly_chart(fig_scatter, use_container_width=True)
+            st.plotly_chart(fig_scatter, use_container_width=True, config={"displayModeBar": "hover"})
 
 st.divider()
 st.caption("Data was collected using pokeapi found here: https://pokeapi.co/")
