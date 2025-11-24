@@ -68,6 +68,10 @@ def stat_bar_chart(stats_df: pd.DataFrame, title: str):
         title=title,
         text_auto=True,
     )
+    fig.update_traces(
+        textangle=0,
+        textposition="outside"
+    )
     fig.update_layout(
         xaxis_title="Base Stat",
         yaxis_title="",
@@ -163,6 +167,10 @@ with col_pika:
         st.plotly_chart(fig_pika, use_container_width=True)
     else:
         st.warning("Could not find Pikachu in the dataset.")
+    st.markdown(
+        f"<div style='text-align:center; margin-top:0.3rem;'>Electric</div>",
+        unsafe_allow_html=True,
+    )
 
 # Weezing
 with col_weezing:
