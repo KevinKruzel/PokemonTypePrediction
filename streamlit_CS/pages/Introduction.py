@@ -142,7 +142,7 @@ with col_pika:
     else:
         st.caption("Add image at `images/pokemon/pikachu.png`")
 
-    pika_stats = get_pokemon_stats(df, "pikachu")
+    pika_stats = get_pokemon_stats(df, 25)
     if pika_stats is not None:
         fig_pika = stat_bar_chart(pika_stats, "Pikachu – Base Stats")
         st.plotly_chart(fig_pika, use_container_width=True)
@@ -158,7 +158,7 @@ with col_weezing:
     else:
         st.caption("Add image at `images/pokemon/weezing.png`")
 
-    weezing_stats = get_pokemon_stats(df, "weezing")
+    weezing_stats = get_pokemon_stats(df, 110)
     if weezing_stats is not None:
         fig_weezing = stat_bar_chart(weezing_stats, "Weezing – Base Stats")
         st.plotly_chart(fig_weezing, use_container_width=True)
@@ -174,7 +174,7 @@ with col_char:
     else:
         st.caption("Add image at `images/pokemon/charizard.png`")
 
-    char_stats = get_pokemon_stats(df, "charizard")
+    char_stats = get_pokemon_stats(df, 6)
     if char_stats is not None:
         fig_char = stat_bar_chart(char_stats, "Charizard – Base Stats")
         st.plotly_chart(fig_char, use_container_width=True)
