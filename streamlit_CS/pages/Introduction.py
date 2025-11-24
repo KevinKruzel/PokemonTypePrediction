@@ -161,14 +161,14 @@ with col_pika:
         else:
             st.caption("Add image at `images/pokemon/pikachu.png`")
 
+    st.markdown("<div style='text-align:center; font-size:16px;'>Electric</div>", unsafe_allow_html=True)
+
     pika_stats = get_pokemon_stats(df, 25)  # Pikachu = ID 25
     if pika_stats is not None:
         fig_pika = stat_bar_chart(pika_stats, "Pikachu – Base Stats")
         st.plotly_chart(fig_pika, use_container_width=True)
     else:
         st.warning("Could not find Pikachu in the dataset.")
-        
-    st.markdown("<div style='text-align:center; font-size:16px;'>Electric</div>", unsafe_allow_html=True)
 
 # Weezing
 with col_weezing:
@@ -185,11 +185,11 @@ with col_weezing:
         else:
             st.caption("Add image at `images/pokemon/weezing.png`")
 
+    st.markdown("<div style='text-align:center; font-size:16px;'>Poison</div>", unsafe_allow_html=True)
+    
     weezing_stats = get_pokemon_stats(df, 110)  # Weezing = ID 110
     fig_weezing = stat_bar_chart(weezing_stats, "Weezing – Base Stats")
     st.plotly_chart(fig_weezing, use_container_width=True)
-
-    st.markdown("<div style='text-align:center; font-size:16px;'>Poison</div>", unsafe_allow_html=True)
 
 # Charizard
 with col_char:
@@ -206,8 +206,8 @@ with col_char:
         else:
             st.caption("Add image at `images/pokemon/charizard.png`")
 
+    st.markdown("<div style='text-align:center; font-size:16px;'>Fire / Flying</div>", unsafe_allow_html=True)
+    
     char_stats = get_pokemon_stats(df, 6)  # Charizard = ID 6
     fig_char = stat_bar_chart(char_stats, "Charizard – Base Stats")
     st.plotly_chart(fig_char, use_container_width=True)
-
-    st.markdown("<div style='text-align:center; font-size:16px;'>Fire / Flying</div>", unsafe_allow_html=True)
