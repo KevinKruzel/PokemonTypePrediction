@@ -42,7 +42,7 @@ STAT_COLORS = {
 # ───────────────────────────
 # HELPER: GET STATS FOR A SPECIES
 # ───────────────────────────
-def get_pokemon_stats_by_id(df: pd.DataFrame, pokemon_id: int) -> pd.DataFrame:
+def get_pokemon_stats(df: pd.DataFrame, pokemon_id: int) -> pd.DataFrame:
     row = df.loc[df["pokemon_id"] == pokemon_id].iloc[0]
 
     stats = {
