@@ -130,7 +130,7 @@ st.divider()
 st.markdown("### Pokémon Stats")
 
 st.markdown("""
-Every Pokémon has six base stats that describe its general strengths. There are other factors in the Pokémon games that can affect these values, but for simplicity's sake,
+Every Pokémon has six stats that describe its general strengths. There are other factors in the Pokémon games that can affect these values, but for simplicity's sake,
 we will only look at the base stats that are unique to every Pokémon species. Here is a short description of what each stat represents:
 
 - **HP (Hit Points):** Determines how much damage a Pokémon can take before fainting.
