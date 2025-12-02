@@ -90,7 +90,7 @@ def stat_bar_chart(stats_df: pd.DataFrame):
 st.title("📘 Introduction to Pokémon Types and Stats")
 
 st.markdown("""
-Pokémon battles revolve around **types** and **stats**.
+Pokémon battles revolve around **types**, **stats**, and **moves**.
 
 Every Pokémon has a primary type and may also have a secondary type (these Pokémon are often referred to has dual-typed).  
 Types interact through strengths and weaknesses (for example, Fire is strong against Grass and Ice, but weak to Water and Ground).  
@@ -112,6 +112,8 @@ for col, t in zip(cols_row1, row1_types):
             f"<div style='text-align:center;'>{t.capitalize()}</div>",
             unsafe_allow_html=True,
         )
+
+st.markdown("")
 
 cols_row2 = st.columns(9)
 for col, t in zip(cols_row2, row2_types):
