@@ -93,7 +93,7 @@ st.markdown("""
 Pokémon battles revolve around **types** and **stats**.
 
 Every Pokémon has a primary type and may also have a secondary type (these Pokémon are often referred to has dual-typed).  
-Types interact through strengths and weaknesses (for example, Water is strong against Fire, but weak to Electric and Grass).  
+Types interact through strengths and weaknesses (for example, Fire is strong against Grass and Ice, but weak to Water and Ground).  
 There are currently 18 types Pokémon can be classified as, and they are listed here:
 """)
 
@@ -141,6 +141,8 @@ we will only look at the base stats that are unique to every Pokémon species. H
 These six stats are what the machine learning model uses to try to predict a Pokémon’s primary type.
 """)
 
+st.divider()
+
 st.markdown("### Pokémon Moves")
 
 st.markdown("""
@@ -149,11 +151,11 @@ Pokémon can use one of two varieties of moves in combat to do damage:
 - A **special move** will reference the attacker's special attack stat and the recipient's special defense stat to determine damage.
 
 Typically speaking, certain Pokémon types will have greater access to physical moves compared to special moves and vice-versa.
-This encourages Pokémon of select types to focus on building up their attack stat or special attack stat, but not both.
+This encourages Pokémon of certain types to focus on building up their attack stat or special attack stat, but not both.
 
-These moves are also classifed as one of the 18 Pokémon types. If a move is used against a Pokémon type that is super effective against (e.g. if a Pokémon uses a water type move against a fire type Pokémon),
+These moves are also classifed as one of the 18 Pokémon types. If a move is used against a Pokémon type that it is super effective against (e.g. if a Pokémon uses a Water type move against a Fire type Pokémon),
 then it will deal double damage (or 4x damage if the recipient is dual-typed and both types are weak to the move's type).
-If a move is not very effective (e.g. if a Pokémon uses a fire type move against a water type Pokémon),
+If a move is not very effective (e.g. if a Pokémon uses a Fire type move against a Water type Pokémon),
 then it will deal half damage (or 0.25x damage if the recipient is dual-typed and both types are resistant to the move's type).
 """)
 
