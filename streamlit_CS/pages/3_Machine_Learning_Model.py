@@ -198,7 +198,7 @@ with col1_r1:
     )
 
 # ───────────────────────────
-# TRAIN MODEL WITH STRATIFIED K-FOLD
+# TRAIN MODEL WITH STRATIFIED K-FOLD (FOR METRICS ONLY)
 # ───────────────────────────
 kf = StratifiedKFold(n_splits=k_folds, shuffle=True)
 
@@ -209,7 +209,9 @@ for train_idx, test_idx in kf.split(X, y_encoded):
     X_train, X_test = X[train_idx], X[test_idx]
     y_train, y_test = y_encoded[train_idx], y_encoded[test_idx]
 
-    model = RandomForestClassifier(
+    # This model is used ONLY inside the fold loop to compute
+    # accuracy and build the confusion matrix on unseen data.
+    cv_model = RandomForestClassifier(
         n_estimators=n_estimators,
         max_depth=rf_max_depth,
         min_samples_split=min_samples_split,
@@ -220,8 +222,8 @@ for train_idx, test_idx in kf.split(X, y_encoded):
         n_jobs=-1,
     )
 
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+    cv_model.fit(X_train, y_train)
+    y_pred = cv_model.predict(X_test)
 
     acc = accuracy_score(y_test, y_pred)
     fold_accuracies.append(acc)
@@ -229,8 +231,8 @@ for train_idx, test_idx in kf.split(X, y_encoded):
     cm = confusion_matrix(y_test, y_pred, labels=range(len(class_names)))
     cm_total += cm
 
-# Fit one model on the full data for feature importances
-rf_full = RandomForestClassifier(
+# Fit one model on the full data for interpretation (feature importances and example tree)
+model_full = RandomForestClassifier(
     n_estimators=n_estimators,
     max_depth=rf_max_depth,
     min_samples_split=min_samples_split,
@@ -240,9 +242,9 @@ rf_full = RandomForestClassifier(
     bootstrap=bootstrap,
     n_jobs=-1,
 )
-rf_full.fit(X, y_encoded)
+model_full.fit(X, y_encoded)
 
-importances = rf_full.feature_importances_
+importances = model_full.feature_importances_
 feat_imp = (
     pd.DataFrame({"feature": STAT_COLS, "importance": importances})
     .sort_values("importance", ascending=False)
@@ -372,8 +374,8 @@ from sklearn.tree import plot_tree
 st.divider()
 st.subheader("Example Decision Tree from the Random Forest (Max tree depth displayed is 3)")
 
-# Extract the first tree from the model
-tree_clf = model.estimators_[0]
+# Extract the first tree from the full-data model used for interpretation
+tree_clf = model_full.estimators_[0]
 
 # Visualize only top part of the tree: max depth = 3
 fig, ax = plt.subplots(figsize=(22, 12))
