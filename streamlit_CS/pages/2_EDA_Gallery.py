@@ -370,7 +370,145 @@ with col_color_bar:
 st.divider()
 
 # ───────────────────────────
-# ROW 6 – Controls for Scatterplot and Scatterplot
+# ROW 6- EGG GROUPS
+# ───────────────────────────
+st.subheader("Exploring Pokémon Egg Groups")
+st.markdown("""
+Egg groups describe which Pokémon can breed with each other. Many Pokémon belong to one egg group, while others
+belong to two, allowing them to act as “bridges” between groups. The visualizations below explore how egg groups
+relate to each other and to primary types.
+
+- The **top-left heatmap** shows how often pairs of egg groups occur together (Egg Group 1 vs Egg Group 2).
+- The **bar chart on the right** shows how many Pokémon belong to each egg group (Pokémon in two groups count once in each).
+- The **bottom-left heatmap** shows how Pokémon are distributed across **primary type** and **egg group**.
+""")
+st.divider()
+
+if df_filtered.empty:
+    st.warning("No Pokémon available for the selected filters.")
+else:
+    # Prepare a melted egg-group membership table for reuse
+    egg_temp = df_filtered[["pokemon_id", "primary_type", "egg_group_1", "egg_group_2"]].copy()
+
+    egg_melted = egg_temp.melt(
+        id_vars=["pokemon_id", "primary_type"],
+        value_vars=["egg_group_1", "egg_group_2"],
+        value_name="egg_group"
+    )
+    egg_melted = egg_melted.dropna(subset=["egg_group"])
+
+    # Avoid double-counting if egg_group_1 == egg_group_2
+    egg_melted = egg_melted.drop_duplicates(subset=["pokemon_id", "egg_group"])
+
+    col_egg_heatmap, col_egg_bar = st.columns([3, 2])
+
+    with col_egg_heatmap:
+        # Top heatmap: Egg Group 1 (x) vs Egg Group 2 (y)
+        egg_pair_counts = (
+            df_filtered
+            .groupby(["egg_group_1", "egg_group_2"])["pokemon_id"]
+            .nunique()
+            .reset_index(name="count")
+        )
+
+        pivot_egg_pair = egg_pair_counts.pivot_table(
+            index="egg_group_2",
+            columns="egg_group_1",
+            values="count",
+            fill_value=0,
+        )
+
+        # Sort rows and columns alphabetically
+        pivot_egg_pair = pivot_egg_pair.reindex(
+            index=sorted(pivot_egg_pair.index),
+            columns=sorted(pivot_egg_pair.columns),
+        )
+
+        fig_egg_pair = px.imshow(
+            pivot_egg_pair,
+            text_auto=True,
+            aspect="auto",
+            color_continuous_scale="Reds",
+            labels=dict(color="Number of Pokémon"),
+        )
+
+        fig_egg_pair.update_layout(
+            title="Heatmap of Egg Group 2 vs Egg Group 1",
+            xaxis_title="Egg Group 1",
+            yaxis_title="Egg Group 2",
+            margin=dict(l=10, r=10, t=40, b=10),
+        )
+
+        st.plotly_chart(fig_egg_pair, use_container_width=True, config={"displayModeBar": False})
+
+        # Bottom heatmap: Egg Group (y) vs Primary Type (x), counting multi-group Pokémon in each group
+        egg_type_counts = (
+            egg_melted
+            .groupby(["egg_group", "primary_type"])["pokemon_id"]
+            .nunique()
+            .reset_index(name="count")
+        )
+
+        pivot_egg_type = egg_type_counts.pivot_table(
+            index="egg_group",
+            columns="primary_type",
+            values="count",
+            fill_value=0,
+        )
+
+        pivot_egg_type = pivot_egg_type.reindex(
+            index=sorted(pivot_egg_type.index),
+            columns=sorted(pivot_egg_type.columns),
+        )
+
+        fig_egg_type = px.imshow(
+            pivot_egg_type,
+            text_auto=True,
+            aspect="auto",
+            color_continuous_scale="Reds",
+            labels=dict(color="Number of Pokémon"),
+        )
+
+        fig_egg_type.update_layout(
+            title="Heatmap of Egg Group by Primary Type",
+            xaxis_title="Primary Type",
+            yaxis_title="Egg Group",
+            margin=dict(l=10, r=10, t=40, b=10),
+        )
+
+        st.plotly_chart(fig_egg_type, use_container_width=True, config={"displayModeBar": False})
+
+    with col_egg_bar:
+        egg_group_counts = (
+            egg_melted
+            .groupby("egg_group")["pokemon_id"]
+            .nunique()
+            .reset_index(name="count")
+            .sort_values("count", ascending=False)
+        )
+
+        fig_egg_bar = px.bar(
+            egg_group_counts,
+            x="egg_group",
+            y="count",
+            title="Pokémon Count by Egg Group",
+            text_auto=True,
+        )
+
+        fig_egg_bar.update_traces(textposition="outside")
+        fig_egg_bar.update_layout(
+            xaxis_title="Egg Group",
+            yaxis_title="Number of Pokémon",
+            margin=dict(l=10, r=10, t=40, b=10),
+            showlegend=False,
+        )
+
+        st.plotly_chart(fig_egg_bar, use_container_width=True, config={"displayModeBar": False})
+
+st.divider()
+
+# ───────────────────────────
+# ROW 7 – Controls for Scatterplot and Scatterplot
 # ───────────────────────────
 st.subheader("Customizable Scatterplot")
 st.markdown("""
