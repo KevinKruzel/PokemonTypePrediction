@@ -291,6 +291,10 @@ with col1_r5:
         "Special Attack": "special-attack",
         "Special Defense": "special-defense",
         "Speed": "speed",
+        "Height": "height",
+        "Weight": "weight",
+        "Capture Rate": "capture_rate",
+        "Total Stats": "total_stats",
     }
 
     # Selectbox to decide which type of points to graph, defaults to "Individual Pokémon Only"
