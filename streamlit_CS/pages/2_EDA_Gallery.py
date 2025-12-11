@@ -263,7 +263,96 @@ stat_boxplot(col2_r6, df_filtered, "total_stats", "Total Stats")
 st.divider()
 
 # ───────────────────────────
-# ROW 5 – Controls for Scatterplot and Scatterplot
+# ROW 5- COLOR
+# ───────────────────────────
+st.subheader("Exploring Pokémon Color by Primary Type")
+st.markdown("""
+Pokémon are also categorized by a **color** attribute in the Pokédex. While this is not directly used in the model,
+it can still reveal interesting patterns about how certain colors are associated with particular types.
+The heatmap on the left shows how often each color appears for each primary type, and the bar chart on the right
+shows the overall counts of Pokémon by color.
+""")
+st.divider()
+
+col_color_heatmap, col_color_bar = st.columns([3, 2])
+
+# Heatmap: primary type (x-axis) vs color (y-axis)
+with col_color_heatmap:
+    if df_filtered.empty:
+        st.warning("No Pokémon available for the selected filters.")
+    else:
+        color_counts = (
+            df_filtered
+            .groupby(["color", "primary_type"])["pokemon_id"]
+            .count()
+            .reset_index(name="count")
+        )
+
+        pivot_color = color_counts.pivot_table(
+            index="color",
+            columns="primary_type",
+            values="count",
+            fill_value=0,
+        )
+
+        # Sort colors and types alphabetically for a tidy display
+        pivot_color = pivot_color.reindex(
+            index=sorted(pivot_color.index),
+            columns=sorted(pivot_color.columns),
+        )
+
+        fig_color_heat = px.imshow(
+            pivot_color,
+            text_auto=True,
+            aspect="auto",
+            color_continuous_scale="Blues",
+            labels=dict(color="Number of Pokémon"),
+        )
+
+        fig_color_heat.update_layout(
+            title="Heatmap of Pokémon Color by Primary Type",
+            xaxis_title="Primary Type",
+            yaxis_title="Color",
+            margin=dict(l=10, r=10, t=40, b=10),
+        )
+
+        st.plotly_chart(fig_color_heat, use_container_width=True, config={"displayModeBar": False})
+
+# Bar chart: counts of each color
+with col_color_bar:
+    if df_filtered.empty:
+        st.warning("No Pokémon available for the selected filters.")
+    else:
+        color_counts_bar = (
+            df_filtered
+            .groupby("color")["pokemon_id"]
+            .count()
+            .reset_index(name="count")
+            .sort_values("count", ascending=False)
+        )
+
+        fig_color_bar = px.bar(
+            color_counts_bar,
+            x="color",
+            y="count",
+            title="Pokémon Count by Color",
+            text_auto=True,
+        )
+
+        fig_color_bar.update_traces(textposition="outside")
+        fig_color_bar.update_layout(
+            xaxis_title="Color",
+            yaxis_title="Number of Pokémon",
+            margin=dict(l=10, r=10, t=40, b=10),
+            showlegend=False,
+        )
+
+        st.plotly_chart(fig_color_bar, use_container_width=True, config={"displayModeBar": False})
+
+st.divider()
+
+# ───────────────────────────
+# ROW 6 – Controls for Scatterplot and Scatterplot
 # ───────────────────────────
 st.subheader("Customizable Scatterplot")
 st.markdown("""
