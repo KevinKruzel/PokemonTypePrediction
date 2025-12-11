@@ -555,7 +555,94 @@ else:
 st.divider()
 
 # ───────────────────────────
-# ROW 7 – Controls for Scatterplot and Scatterplot
+# ROW 9 - SHAPE
+# ───────────────────────────
+st.subheader("Exploring Pokémon Body Shapes")
+st.markdown("""
+Pokémon are also categorized by a **shape** attribute in the Pokédex (e.g., upright, quadruped, wings, etc.).
+While shape is not directly used in the prediction model, it can reveal aesthetic patterns tied to typing.
+The visualizations below explore how shapes are distributed across primary types and overall.
+""")
+st.divider()
+
+col_shape_heatmap, col_shape_bar = st.columns([3, 2])
+
+if df_filtered.empty:
+    with col_shape_heatmap:
+        st.warning("No Pokémon available for the selected filters.")
+    with col_shape_bar:
+        st.warning("No Pokémon available for the selected filters.")
+else:
+    with col_shape_heatmap:
+        shape_type_counts = (
+            df_filtered
+            .groupby(["shape", "primary_type"])["pokemon_id"]
+            .count()
+            .reset_index(name="count")
+        )
+
+        pivot_shape_type = shape_type_counts.pivot_table(
+            index="shape",
+            columns="primary_type",
+            values="count",
+            fill_value=0,
+        )
+
+        # Sort rows (shapes) and columns (types) alphabetically
+        pivot_shape_type = pivot_shape_type.reindex(
+            index=sorted(pivot_shape_type.index),
+            columns=sorted(pivot_shape_type.columns),
+        )
+
+        fig_shape_heat = px.imshow(
+            pivot_shape_type,
+            text_auto=True,
+            aspect="auto",
+            color_continuous_scale="Reds",
+            labels=dict(color="Number of Pokémon"),
+        )
+
+        fig_shape_heat.update_layout(
+            title="Heatmap of Pokémon Shape by Primary Type",
+            xaxis_title="Primary Type",
+            yaxis_title="Shape",
+            margin=dict(l=10, r=10, t=40, b=10),
+        )
+
+        st.plotly_chart(fig_shape_heat, use_container_width=True, config={"displayModeBar": False})
+
+    with col_shape_bar:
+        shape_counts_bar = (
+            df_filtered
+            .groupby("shape")["pokemon_id"]
+            .count()
+            .reset_index(name="count")
+            .sort_values("count", ascending=False)
+        )
+
+        fig_shape_bar = px.bar(
+            shape_counts_bar,
+            x="shape",
+            y="count",
+            title="Pokémon Count by Shape",
+            text_auto=True,
+            color="shape",  # distinct color per shape
+        )
+
+        fig_shape_bar.update_traces(textposition="outside")
+        fig_shape_bar.update_layout(
+            xaxis_title="Shape",
+            yaxis_title="Number of Pokémon",
+            margin=dict(l=10, r=10, t=40, b=10),
+            showlegend=False,
+        )
+
+        st.plotly_chart(fig_shape_bar, use_container_width=True, config={"displayModeBar": False})
+
+st.divider()
+
+# ───────────────────────────
+# ROW 8 – Controls for Scatterplot and Scatterplot
 # ───────────────────────────
 st.subheader("Customizable Scatterplot")
 st.markdown("""
