@@ -421,21 +421,25 @@ else:
     col_egg_heatmap, col_egg_bar = st.columns([3, 2])
 
     with col_egg_heatmap:
-        # Top heatmap: unordered egg-group pairs (only diagonal + one triangle)
+       # Top heatmap: unordered egg-group pairs (only diagonal + one triangle)
         pairs = df_filtered[["pokemon_id", "egg_group_1", "egg_group_2"]].copy()
 
-        # Drop rows with no egg_group_1 at all (should be rare / undiscovered handled via its own group)
+        # Remove Pokémon whose egg group is Ditto (Ditto is the only member)
+        pairs = pairs[~pairs["egg_group_1"].isin(["ditto"])]
+        pairs = pairs[~pairs["egg_group_2"].isin(["ditto"])]
+
+        # Drop rows with no egg_group_1 at all
         pairs = pairs.dropna(subset=["egg_group_1"])
 
-        # If a Pokémon has only one egg group, treat it as (group, group) so it lands on the diagonal
+        # If a Pokémon has only one egg group, treat it as (group, group)
         pairs["eg1"] = pairs["egg_group_1"]
         pairs["eg2"] = pairs["egg_group_2"].fillna(pairs["egg_group_1"])
 
-        # Sort each Pokémon's pair so (monster, plant) and (plant, monster) become the same (min, max)
+        # Sort each Pokémon's pair → unordered pair
         pairs["egg_min"] = np.where(pairs["eg1"] <= pairs["eg2"], pairs["eg1"], pairs["eg2"])
         pairs["egg_max"] = np.where(pairs["eg1"] <= pairs["eg2"], pairs["eg2"], pairs["eg1"])
 
-        # Count unique Pokémon per unordered egg-group pair
+        # Count Pokémon per egg-group pair
         egg_pair_counts = (
             pairs
             .groupby(["egg_min", "egg_max"])["pokemon_id"]
@@ -443,26 +447,27 @@ else:
             .reset_index(name="count")
         )
 
-        # Build a square matrix with the same egg groups on rows and columns
-        all_groups = sorted(set(egg_pair_counts["egg_min"]).union(egg_pair_counts["egg_max"]))
+        # Build a square matrix with the same egg groups on rows/columns
+        all_groups = sorted(
+            set(egg_pair_counts["egg_min"]).union(egg_pair_counts["egg_max"])
+        )
+
+        # Ensure Ditto is not present
+        all_groups = [g for g in all_groups if g != "ditto"]
 
         pivot_egg_pair = egg_pair_counts.pivot_table(
-            index="egg_max",   # rows
-            columns="egg_min", # columns
+            index="egg_max",
+            columns="egg_min",
             values="count",
             aggfunc="sum",
         )
 
-        # Reindex so rows/cols share the same ordered egg-group list
         pivot_egg_pair = pivot_egg_pair.reindex(
             index=all_groups,
             columns=all_groups,
         )
 
-        # NOTE: We deliberately do NOT fill NaNs here.
-        # Because egg_min <= egg_max by construction, the upper triangle stays NaN (blank),
-        # and the diagonal + one triangle holds all the data.
-
+        # Leave NaNs in upper triangle so they appear blank
         fig_egg_pair = px.imshow(
             pivot_egg_pair,
             text_auto=True,
@@ -472,7 +477,7 @@ else:
         )
 
         fig_egg_pair.update_layout(
-            title="Heatmap of Egg-Group Pairings (Unordered)",
+            title="Heatmap of Egg-Group Pairings (Unordered, Ditto Excluded)",
             xaxis_title="Egg Group",
             yaxis_title="Egg Group",
             margin=dict(l=10, r=10, t=40, b=10),
