@@ -384,6 +384,24 @@ relate to each other and to primary types.
 """)
 st.divider()
 
+EGG_GROUP_COLORS = {
+    "monster": "#8B0000",
+    "water1": "#1E90FF",
+    "water2": "#4169E1",
+    "water3": "#0000CD",
+    "bug": "#7FFF00",
+    "flying": "#87CEEB",
+    "field": "#CD853F",
+    "fairy": "#FF69B4",
+    "grass": "#228B22",
+    "humanlike": "#800080",
+    "mineral": "#708090",
+    "amorphous": "#A0522D",
+    "ditto": "#BA55D3",
+    "dragon": "#9932CC",
+    "undiscovered": "#696969",
+}
+
 if df_filtered.empty:
     st.warning("No Pokémon available for the selected filters.")
 else:
@@ -487,12 +505,15 @@ else:
             .sort_values("count", ascending=False)
         )
 
+        # Color each bar according to its egg group
         fig_egg_bar = px.bar(
             egg_group_counts,
             x="egg_group",
             y="count",
             title="Pokémon Count by Egg Group",
             text_auto=True,
+            color="egg_group",
+            color_discrete_map=EGG_GROUP_COLORS,
         )
 
         fig_egg_bar.update_traces(textposition="outside")
