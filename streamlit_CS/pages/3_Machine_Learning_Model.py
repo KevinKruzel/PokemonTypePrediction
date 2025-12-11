@@ -58,34 +58,48 @@ if df_filtered["primary_type"].nunique() < 2:
 # ───────────────────────────
 # FEATURES AND TARGET
 # ───────────────────────────
-# Define the columns that will be used in the model
+
+# Base stat columns
 STAT_COLS = ["hp", "attack", "defense", "special-attack", "special-defense", "speed"]
-df_ml = df_filtered.dropna(subset=STAT_COLS + ["primary_type"]).copy()
 
-# Extra guards: after dropna + filters we still need data and ≥ 2 classes
-if df_ml.empty:
-    st.warning("Not enough Pokémon with complete stat data after filtering to train a model.")
-    st.stop()
+# Extra numeric predictor columns
+EXTRA_NUMERIC_COLS = ["height", "weight", "capture_rate", "total_stats"]
 
-if df_ml["primary_type"].nunique() < 2:
-    st.warning("Not enough different primary types in the filtered data to train a classifier.")
-    st.stop()
+# Egg-group one-hot columns already exist in the CSV (egg_bug, egg_monster, etc.)
+EGG_GROUP_COLS = [
+    col for col in df_filtered.columns
+    if col.startswith("egg_") and not col.startswith("egg_group")
+]
 
-X = df_ml[STAT_COLS].values
+# WORKING COPY
+df_ml = df_filtered.copy()
+
+# Encode color and shape as single categorical integers
+color_encoder = LabelEncoder()
+shape_encoder = LabelEncoder()
+
+df_ml["color_encoded"] = color_encoder.fit_transform(df_ml["color"])
+df_ml["shape_encoded"] = shape_encoder.fit_transform(df_ml["shape"])
+
+# Final feature list
+FEATURE_COLS = (
+    STAT_COLS
+    + EXTRA_NUMERIC_COLS
+    + EGG_GROUP_COLS
+    + ["color_encoded", "shape_encoded"]
+)
+
+X = df_ml[FEATURE_COLS].values
 y = df_ml["primary_type"].values
 
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 class_names = list(label_encoder.classes_)
 
-# For K-fold upper bound, we need class counts from the filtered data
+# Compute class balance to determine max K
 class_counts = df_ml["primary_type"].value_counts()
-min_class_count = int(class_counts.min())  # smallest class size
-
-# Base K on the rarest class, capped at 10
+min_class_count = int(class_counts.min())
 max_k_allowed = min(10, min_class_count)
-
-# Make sure K is at least 2 so StratifiedKFold works
 if max_k_allowed < 2:
     max_k_allowed = 2
 
@@ -246,7 +260,7 @@ model_full.fit(X, y_encoded)
 
 importances = model_full.feature_importances_
 feat_imp = (
-    pd.DataFrame({"feature": STAT_COLS, "importance": importances})
+    pd.DataFrame({"feature": FEATURE_COLS, "importance": importances})
     .sort_values("importance", ascending=False)
 )
 
@@ -284,7 +298,7 @@ with col2_r1:
         feat_imp,
         x="feature",
         y="importance",
-        title="Relative Importance of Stats",
+        title="Relative Importance of Features",
         text_auto=".2f",
     )
 
@@ -382,7 +396,7 @@ fig, ax = plt.subplots(figsize=(22, 12))
 
 plot_tree(
     tree_clf,
-    feature_names=STAT_COLS,
+    feature_names=FEATURE_COLS,
     class_names=class_names,
     filled=True,
     rounded=True,
