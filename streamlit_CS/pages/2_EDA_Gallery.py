@@ -241,6 +241,14 @@ col1_r4, col2_r4 = st.columns(2)
 stat_boxplot(col1_r4, df_filtered, "special-defense", "Special Defense")
 stat_boxplot(col2_r4, df_filtered, "speed", "Speed")
 
+col1_r5, col2_r5 = st.columns(2)
+stat_boxplot(col1_r5, df_filtered, "height", "Height")
+stat_boxplot(col2_r5, df_filtered, "weight", "Weight")
+
+col1_r6, col2_r6 = st.columns(2)
+stat_boxplot(col1_r6, df_filtered, "capture_rate", "Capture Rate")
+stat_boxplot(col2_r6, df_filtered, "total_stats", "Total Stats")
+
 st.divider()
 
 # ───────────────────────────
