@@ -385,20 +385,20 @@ relate to each other and to primary types.
 st.divider()
 
 EGG_GROUP_COLORS = {
-    "monster": "#8B0000",
-    "water1": "#1E90FF",
-    "water2": "#4169E1",
-    "water3": "#0000CD",
-    "bug": "#7FFF00",
-    "flying": "#87CEEB",
-    "field": "#CD853F",
+    "monster": "#D25064",
+    "water1": "#97B5FD",
+    "water2": "#729AFA",
+    "water3": "#5876BE",
+    "bug": "#AAC22A",
+    "flying": "#B29AFA",
+    "field": "#E0C068",
     "fairy": "#FF69B4",
     "grass": "#228B22",
     "humanlike": "#800080",
     "mineral": "#708090",
     "amorphous": "#A0522D",
-    "ditto": "#BA55D3",
     "dragon": "#9932CC",
+    "ditto": "#BA55D3",
     "undiscovered": "#696969",
 }
 
